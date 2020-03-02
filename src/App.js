@@ -1,26 +1,34 @@
 import React from "react";
-import logo from "./logo.svg";
+import "semantic-ui-css/semantic.min.css";
 import "./App.css";
+import Editor from "./container/Editor";
+import Dashboard from "./container/Dashboard";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Container } from "semantic-ui-react";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      editor: false
+    };
+  }
+
+  createNewArticle = () => {
+    this.setState({ editor: !this.state.editor });
+  };
+
+  render = () => {
+    return (
+      <Container className="App">
+        {this.state.editor ? (
+          <Editor />
+        ) : (
+          <Dashboard createNewArticle={this.createNewArticle} />
+        )}
+      </Container>
+    );
+  };
 }
 
 export default App;
