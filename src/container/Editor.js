@@ -46,11 +46,12 @@ class Editor extends React.Component {
               placeholder="Enter title here"
               value={articleTitle}
               onChange={e => this.setState({ articleTitle: e.target.value })}
+              aria-label="Article Title Input Box"
             ></Input>
           </Container>
           <Divider hidden />
         </Container>
-        <Container textAlign="center">
+        <Container textAlign="center" aria-label="Main Article Container">
           <Segment placeholder>
             This block is a placeholder for visualization
             <Button primary big="true">
