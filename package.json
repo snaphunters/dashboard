@@ -22,7 +22,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "coverage": "react-scripts test --coverage --watchAll=false"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,5 +48,21 @@
     "eslint-plugin-react": "^7.18.3",
     "jest": "^24.9.0",
     "prettier": "^1.19.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/*.js",
+      "src/container/*.js",
+      "!src/index.js",
+      "!src/serviceWorker.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 80,
+        "branches": 80,
+        "functions": 80,
+        "lines": 80
+      }
+    }
   }
 }
