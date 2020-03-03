@@ -4,17 +4,19 @@ import {
   Input,
   Container,
   Divider,
-  Segment,
   Button,
-  Header
+  Header,
+  Icon
 } from "semantic-ui-react";
-import axios from "axios";
+import TextBlock from "../component/TextBlock";
 
 class Editor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      articleTitle: ""
+      articleTitle: "",
+      blocks: {},
+      blocksrendered: []
     };
   }
   publishArticle = async article => {
@@ -25,11 +27,25 @@ class Editor extends React.Component {
       blocks: this.state.blocks,
       published: this.state.published
     };
-    const res = await axios.post(
-      "https://snaphunt-demo-backend.herokuapp.com/articles",
-      articleDetails
+  };
+
+  insertTextBlock = () => {
+    const index = this.state.blocksrendered.length;
+    const renderArr = this.state.blocksrendered;
+    renderArr.push(
+      <TextBlock
+        key={index}
+        updateInputText={this.updateInputText}
+        index={index}
+      />
     );
-    console.log(res);
+    this.setState({ blocksrendered: renderArr });
+  };
+
+  updateInputText = (index, value) => {
+    const blockobj = this.state.blocks;
+    blockobj[index] = { type: "text", inputText: value };
+    this.setState({ blocks: blockobj });
   };
 
   render = () => {
@@ -48,23 +64,15 @@ class Editor extends React.Component {
               onChange={e => this.setState({ articleTitle: e.target.value })}
               aria-label="Article Title Input Box"
             ></Input>
+            <Divider hidden />
+            <Button icon onClick={this.insertTextBlock}>
+              <Icon name="text cursor" />
+            </Button>
           </Container>
           <Divider hidden />
         </Container>
-        <Container textAlign="center" aria-label="Main Article Container">
-          <Segment placeholder>
-            This block is a placeholder for visualization
-            <Button primary big="true">
-              Add block here
-            </Button>
-          </Segment>
-          <Divider hidden />
-          <Segment placeholder>
-            This block is a placeholder for visualization
-            <Button primary big="true">
-              Add block here
-            </Button>
-          </Segment>
+        <Container textAlign="center">
+          <div>{this.state.blocksrendered}</div>
           <Divider hidden />
           <Button onClick={article => this.publishArticle(article)}>
             Publish

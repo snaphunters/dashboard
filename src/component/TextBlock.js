@@ -4,13 +4,10 @@ import "semantic-ui-css/semantic.min.css";
 import TextAreaAutosize from "react-textarea-autosize";
 
 class TextBlock extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { inputText: "" };
-  }
-  onChangeHandler = event => {
-    this.setState({ inputText: event.target.value });
+  updateInput = event => {
+    this.props.updateInputText(this.props.index, event.target.value);
   };
+
   render() {
     return (
       <div>
@@ -18,7 +15,7 @@ class TextBlock extends React.Component {
           <Form>
             <Form.TextArea
               control={TextAreaAutosize}
-              onChange={this.onChangeHandler}
+              onChange={this.updateInput}
               label="Content"
               placeholder="Type content here..."
             />
