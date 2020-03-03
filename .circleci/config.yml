@@ -16,9 +16,6 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: unit-test
-          command: "npm run test:coverage"
-      - run:
           name: linting
           command: "npm run lint"
 workflows:
