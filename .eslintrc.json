@@ -23,5 +23,12 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "rules": {"react/prop-types": 0}
+  "rules": {
+    "no-unused-vars": [
+      "error", 
+      { 
+        "vars": "local"
+      }
+    ]
+  }
 }
