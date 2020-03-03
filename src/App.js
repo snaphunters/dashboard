@@ -1,9 +1,7 @@
 import React from "react";
 import "semantic-ui-css/semantic.min.css";
-import "./App.css";
 import Editor from "./container/Editor";
 import Dashboard from "./container/Dashboard";
-
 import { Container } from "semantic-ui-react";
 
 class App extends React.Component {
@@ -20,7 +18,7 @@ class App extends React.Component {
 
   render = () => {
     return (
-      <Container className="App">
+      <Container>
         {this.state.editor ? (
           <Editor />
         ) : (
