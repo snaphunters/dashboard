@@ -1,4 +1,5 @@
 import React from "react";
+import "semantic-ui-css/semantic.min.css";
 import {
   Input,
   Container,
@@ -7,6 +8,7 @@ import {
   Button,
   Header
 } from "semantic-ui-react";
+import axios from "axios";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -15,6 +17,20 @@ class Editor extends React.Component {
       articleTitle: ""
     };
   }
+  publishArticle = async article => {
+    const articleDetails = {
+      title: this.state.title,
+      categories: this.state.categories,
+      subCategories: this.state.subCategories,
+      blocks: this.state.blocks,
+      published: this.state.published
+    };
+    const res = await axios.post(
+      "https://snaphunt-demo-backend.herokuapp.com/articles",
+      articleDetails
+    );
+    console.log(res);
+  };
 
   render = () => {
     const { articleTitle } = this.state;
@@ -49,6 +65,9 @@ class Editor extends React.Component {
             </Button>
           </Segment>
           <Divider hidden />
+          <Button onClick={article => this.publishArticle(article)}>
+            Publish
+          </Button>
         </Container>
       </Container>
     );
