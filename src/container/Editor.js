@@ -65,13 +65,17 @@ class Editor extends React.Component {
               aria-label="Article Title Input Box"
             ></Input>
             <Divider hidden />
-            <Button icon onClick={this.insertTextBlock}>
+            <Button
+              icon
+              onClick={this.insertTextBlock}
+              aria-label="Add Text Button"
+            >
               <Icon name="text cursor" />
             </Button>
           </Container>
           <Divider hidden />
         </Container>
-        <Container textAlign="center">
+        <Container textAlign="center" aria-label="Main Article Container">
           <div>{this.state.blocksrendered}</div>
           <Divider hidden />
           <Button onClick={article => this.publishArticle(article)}>

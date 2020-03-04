@@ -18,6 +18,7 @@ class TextBlock extends React.Component {
               onChange={this.updateInput}
               label="Content"
               placeholder="Type content here..."
+              aria-label="Text Block"
             />
           </Form>
         </Segment>

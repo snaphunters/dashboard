@@ -25,4 +25,20 @@ describe("Editor.js", () => {
     const articleTitleText = getByDisplayValue("snapi");
     expect(articleTitleText).toBeInTheDocument();
   });
+  test("TextBox is rendered when add text box button is clicked", () => {
+    const { getByLabelText } = render(<Editor />);
+    const insertTextButton = getByLabelText("Add Text Button");
+    fireEvent.click(insertTextButton);
+    const textBlock = getByLabelText("Text Block");
+    expect(textBlock).toBeInTheDocument();
+  });
+  test("TextBox input is rendered on the editor", () => {
+    const { getByLabelText, getByDisplayValue } = render(<Editor />);
+    const insertTextButton = getByLabelText("Add Text Button");
+    fireEvent.click(insertTextButton);
+    const textBlock = getByLabelText("Text Block");
+    fireEvent.change(textBlock, { target: { value: "Snapi" } });
+    const TextBoxText = getByDisplayValue("Snapi");
+    expect(TextBoxText).toBeInTheDocument();
+  });
 });
