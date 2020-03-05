@@ -7,6 +7,7 @@ export default class ArticleTopic extends React.Component {
     return (
       <Container>
         <Input
+          fluid
           size="large"
           placeholder="Enter topic here"
           value={this.props.articleTitle}
