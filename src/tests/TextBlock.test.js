@@ -18,8 +18,8 @@ describe("TextBlock.js", () => {
     const { getByLabelText } = render(
       <TextBlock index="0" updateInputText={onEventMock} />
     );
-    const TextBlockBox = getByLabelText("Text Block");
+    const TextBlockBox = getByLabelText("Article Content Block");
     fireEvent.change(TextBlockBox, { target: { value: "Snapi" } });
-    expect(onEventMock).toHaveBeenCalledWith("0", "Snapi");
+    expect(onEventMock).toHaveBeenCalledWith("Snapi");
   });
 });
