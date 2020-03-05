@@ -11,11 +11,6 @@ const AddCKBlockButton = () => {
 };
 
 export default class ArticleTopic extends React.Component() {
-  
-  // renderRichTextMediaBlock = () => {
-      
-  // };
-
   render = () => {
     const { blocks } = this.props();
 
