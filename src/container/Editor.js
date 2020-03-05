@@ -11,6 +11,9 @@ import {
 } from "../component/SaveErrorModal";
 import { v4 as uuidv4 } from "uuid";
 import TopicAndSubtopic from "../component/TopicAndSubtopic";
+  Segment
+} from "semantic-ui-react";
+import RichTextMediaBlock from "../component/RichTextMediaBlock";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -68,22 +71,27 @@ class Editor extends React.Component {
     }
   };
 
-  insertTextBlock = () => {
+  insertBlock = () => {
     const index = this.state.blocksrendered.length;
     const renderArr = this.state.blocksrendered;
     renderArr.push(
-      <TextBlock
-        key={index}
-        updateInputText={this.updateInputText}
-        index={index}
-      />
+      <Container>
+        <RichTextMediaBlock
+          key={index}
+          updateInputInBlock={this.updateInputInBlock}
+          index={index}
+        />
+        <Button icon onClick={this.insertBlock} aria-label="Add Text Button">
+          <Icon name="text cursor" />
+        </Button>
+      </Container>
     );
     this.setState({ blocksrendered: renderArr });
   };
 
-  updateInputText = (index, value) => {
+  updateInputInBlock = (index, value) => {
     const blockobj = this.state.blocks;
-    blockobj[index] = { type: "text", inputText: value };
+    blockobj[index] = { blockData: value };
     this.setState({ blocks: blockobj });
   };
 
@@ -108,10 +116,10 @@ class Editor extends React.Component {
             <Divider hidden />
             <Button
               icon
-              onClick={this.insertTextBlock}
-              aria-label="Add Text Button"
+              onClick={this.insertBlock}
+              aria-label="Add SubTopic Button"
             >
-              <Icon name="text cursor" />
+              <Icon name="plus" />
             </Button>
             <SavedModal
               isSaved={this.state.isSaved}
@@ -129,7 +137,7 @@ class Editor extends React.Component {
           <Divider hidden />
         </Container>
         <Container textAlign="center" aria-label="Main Article Container">
-          <div>{this.state.blocksrendered}</div>
+          <Segment>{this.state.blocksrendered}</Segment>
           <Divider hidden />
         </Container>
       </Container>
