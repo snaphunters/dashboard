@@ -48,7 +48,7 @@ workflows:
             branches:
               only:
                 - master
-      - deploy-testenv
+      - deploy-testenv:
           requires:
             - unit-test
       - deploy-prod:
