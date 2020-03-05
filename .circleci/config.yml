@@ -49,6 +49,8 @@ workflows:
               only:
                 - master
       - deploy-testenv
+          requires:
+            - unit-test
       - deploy-prod:
           requires:
             - unit-test
