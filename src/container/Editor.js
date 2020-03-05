@@ -1,14 +1,9 @@
 import React from "react";
 import "semantic-ui-css/semantic.min.css";
-import {
-  Input,
-  Container,
-  Divider,
-  Button,
-  Header,
-  Icon
-} from "semantic-ui-react";
+import { Container, Divider, Button, Header, Icon } from "semantic-ui-react";
 import TextBlock from "../component/TextBlock";
+import { v4 as uuidv4 } from "uuid";
+import TopicAndSubtopic from "../component/TopicAndSubtopic";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -16,9 +11,24 @@ class Editor extends React.Component {
     this.state = {
       articleTitle: "",
       blocks: {},
-      blocksrendered: []
+      blocksrendered: [],
+      id: uuidv4(),
+      blockContent: ""
     };
   }
+
+  setArticleTitle = value => {
+    this.setState({
+      articleTitle: value
+    });
+  };
+
+  setBlockContent = value => {
+    this.setState({
+      blockContent: value
+    });
+  };
+
   publishArticle = async article => {
     const articleDetails = {
       title: this.state.title,
@@ -49,22 +59,19 @@ class Editor extends React.Component {
   };
 
   render = () => {
-    const { articleTitle } = this.state;
     return (
       <Container>
         <Container>
           <Divider hidden />
           <Container textAlign="center">
             <Header as="h1">Editor</Header>
-            <Input
-              label="Article Title: "
-              size="large"
-              placeholder="Enter title here"
-              value={articleTitle}
-              onChange={e => this.setState({ articleTitle: e.target.value })}
-              aria-label="Article Title Input Box"
-            ></Input>
-            <Divider hidden />
+            <Container className="debugger">
+              <TopicAndSubtopic
+                id={this.state.id}
+                blockContent={this.setBlockContent}
+                workingArticleTitle={this.setArticleTitle}
+              />
+            </Container>
             <Button
               icon
               onClick={this.insertTextBlock}
