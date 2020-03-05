@@ -1,6 +1,15 @@
 import React from "react";
 import "semantic-ui-css/semantic.min.css";
-import { Container, Divider, Button, Header, Icon } from "semantic-ui-react";
+
+import {
+  Container,
+  Divider,
+  Button,
+  Header,
+  Icon,
+  Input,
+  Label
+} from "semantic-ui-react";
 import TextBlock from "../component/TextBlock";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
@@ -14,6 +23,8 @@ import TopicAndSubtopic from "../component/TopicAndSubtopic";
   Segment
 } from "semantic-ui-react";
 import RichTextMediaBlock from "../component/RichTextMediaBlock";
+import { v4 as uuidv4 } from "uuid";
+import TopicAndSubtopic from "../component/TopicAndSubtopic";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -23,10 +34,7 @@ class Editor extends React.Component {
       blocks: {},
       blocksrendered: [],
       id: uuidv4(),
-      blockContent: "",
-      isSaved: false,
-      titleExistError: false,
-      noTitleError: false
+      blockContent: ""
     };
   }
 
@@ -41,9 +49,6 @@ class Editor extends React.Component {
       blockContent: value
     });
   };
-  closeSaveModal = () => this.setState({ isSaved: false });
-  closeTitleExistError = () => this.setState({ titleExistError: false });
-  closeNoTitleError = () => this.setState({ noTitleError: false });
 
   publishArticle = async article => {
     try {
@@ -105,15 +110,6 @@ class Editor extends React.Component {
           <Divider hidden />
           <Container textAlign="center">
             <Header as="h1">Editor</Header>
-            <Container>
-              <TopicAndSubtopic
-                id={this.state.id}
-                blockContent={this.setBlockContent}
-                workingArticleTitle={this.setArticleTitle}
-              />
-            </Container>
-
-            <Divider hidden />
             <Button
               icon
               onClick={this.insertBlock}
