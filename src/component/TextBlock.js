@@ -5,7 +5,7 @@ import TextAreaAutosize from "react-textarea-autosize";
 
 class TextBlock extends React.Component {
   updateInput = event => {
-    this.props.updateInputText(this.props.index, event.target.value);
+    this.props.updateInputText(event.target.value);
   };
 
   render() {
@@ -17,8 +17,8 @@ class TextBlock extends React.Component {
               control={TextAreaAutosize}
               onChange={this.updateInput}
               label="Content"
-              placeholder="Type content here..."
-              aria-label="Text Block"
+              placeholder={this.props.value}
+              aria-label="Article Content Block"
             />
           </Form>
         </Segment>
