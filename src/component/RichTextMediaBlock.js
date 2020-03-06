@@ -1,25 +1,27 @@
-import { Segment } from "semantic-ui-react";
+import { Container, Button } from "semantic-ui-react";
 import React from "react";
-import "semantic-ui-css/semantic.min.css";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import InlineEditor from "@ckeditor/ckeditor5-build-inline";
-// import TextAreaAutosize from "react-textarea-autosize";
 
-const CKBlock = blockData => {
-  return (
-    <CKEditor
-      editor={InlineEditor}
-      data={blockData}
-      onChange={(event, editor) => {
-        const data = editor.getData();
-        // this.props.updateInputInBlock(this.props.index, this.state.blockData);
-      }}
-    />
-  );
+const RichTextMediaBlock = ({
+  topicAndSubtopicArray,
+  updateArticleState,
+  blocksArray
+}) => {
+  return blocksArray.map((CKString, blockArrayIndex) => {
+    return (
+      <Container key={blockArrayIndex}>
+        <CKEditor
+          editor={InlineEditor}
+          data={CKString}
+          onChange={(event, editor) => {
+            const data = editor.getData();
+          }}
+        />
+        <Button icon="plus circle" />
+      </Container>
+    );
+  });
 };
-
-function RichTextMediaBlock() {
-  return <Segment aria-label="RichTextMediaBlock">{CKBlock()}</Segment>;
-}
 
 export default RichTextMediaBlock;
