@@ -8,19 +8,20 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editor: false
+      articleId: "",
+      showEditor: false
     };
   }
 
   createNewArticle = () => {
-    this.setState({ editor: !this.state.editor });
+    this.setState({ showEditor: !this.state.showEditor });
   };
 
   render = () => {
     return (
       <Container>
-        {this.state.editor ? (
-          <Editor />
+        {this.state.showEditor ? (
+          <Editor articleId={this.state.articleId} />
         ) : (
           <Dashboard createNewArticle={this.createNewArticle} />
         )}

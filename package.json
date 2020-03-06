@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-inline": "^17.0.0",
+    "@ckeditor/ckeditor5-image": "^17.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.1",
@@ -19,8 +20,7 @@
     "react-scripts": "3.4.0",
     "react-textarea-autosize": "^7.1.2",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.88.2",
-    "uuid": "^7.0.2"
+    "semantic-ui-react": "^0.88.2"
   },
   "scripts": {
     "start": "react-scripts start",

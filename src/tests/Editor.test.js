@@ -28,7 +28,6 @@ describe("Editor.js", () => {
     const articleTitleText = getByDisplayValue("snapi");
     expect(articleTitleText).toBeInTheDocument();
   });
-
   test("TextBox is rendered when add text box button is clicked", () => {
     const { getByLabelText, getAllByLabelText } = render(<Editor />);
     const insertTextButton = getByLabelText("Add Text Button");

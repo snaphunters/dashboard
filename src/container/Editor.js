@@ -1,19 +1,10 @@
 import React from "react";
 
-import {
-  Container,
-  Divider,
-  Button,
-  Header,
-  Icon,
-  Input,
-  Segment,
-  Label
-} from "semantic-ui-react";
-import HeaderBar from "../component/HeaderBar";
-import axios from "../utils/axios";
-import SavedModal from "../component/SavedModal";
-import SaveErrorModal from "../component/SaveErrorModal";
+import { Container } from "semantic-ui-react";
+// import HeaderBar from "../component/HeaderBar";
+// import axios from "../utils/axios";
+// import SavedModal from "../component/SavedModal";
+// import SaveErrorModal from "../component/SaveErrorModal";
 import TopicAndSubtopic from "../component/TopicAndSubtopic";
 
 class Editor extends React.Component {
@@ -24,6 +15,10 @@ class Editor extends React.Component {
       // blocksrendered: [],
       // blockContent: "",
       topicAndSubtopicArray: [
+        {
+          name: "",
+          blockArray: [""]
+        },
         {
           name: "",
           blockArray: [""]
