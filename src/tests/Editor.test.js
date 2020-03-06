@@ -3,13 +3,8 @@ import { render, fireEvent, wait } from "@testing-library/react";
 import Editor from "../container/Editor";
 import axios from "../utils/axios";
 import MockAdapter from "axios-mock-adapter";
-import HeaderBar from "../component/HeaderBar";
-import SavedModal from "../component/SavedModal";
 const mockAxios = new MockAdapter(axios);
 
-beforeEach(() => {
-  //mockAxios.restore();
-});
 describe("Editor.js", () => {
   test("<Editor> should render", () => {
     const { getByText } = render(<Editor />);
@@ -90,8 +85,44 @@ describe("Editor.js", () => {
     fireEvent.change(textBlock, { target: { value: "Snapi" } });
     const saveButton = getByLabelText("Save Button");
     fireEvent.click(saveButton);
-    await wait(() => getByText("Successfully saved!"));
-    const successfulMessageModal = getByText("Successfully saved!");
-    expect(successfulMessageModal).toBeInTheDocument();
+    await wait(() =>
+      expect(getByText("Successfully saved!")).toBeInTheDocument()
+    );
+  });
+  test("should render Error message when axios fail to accept empty article title", async () => {
+    const { getByText, getByLabelText } = render(<Editor />);
+    mockAxios
+      .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
+      .reply(400);
+
+    const textBlock = getByLabelText("Article Title Input Box");
+    fireEvent.change(textBlock, { target: { value: "" } });
+    const saveButton = getByLabelText("Save Button");
+    fireEvent.click(saveButton);
+    await wait(() =>
+      expect(
+        getByText(
+          "Error! Your article might have the same title as an existing article or there is no title available."
+        )
+      ).toBeInTheDocument()
+    );
+  });
+  test("should render Error message when axios fail to accept only spaces article title", async () => {
+    const { getByText, getByLabelText } = render(<Editor />);
+    mockAxios
+      .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
+      .reply(400);
+
+    const textBlock = getByLabelText("Article Title Input Box");
+    fireEvent.change(textBlock, { target: { value: "     " } });
+    const saveButton = getByLabelText("Save Button");
+    fireEvent.click(saveButton);
+    await wait(() =>
+      expect(
+        getByText(
+          "Error! Your article might have the same title as an existing article or there is no title available."
+        )
+      ).toBeInTheDocument()
+    );
   });
 });
