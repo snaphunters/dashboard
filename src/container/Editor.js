@@ -103,19 +103,7 @@ class Editor extends React.Component {
                 workingArticleTitle={this.setArticleTitle}
               />
             </Container>
-            <Input
-              label={
-                <Label color="teal" tag>
-                  Title
-                </Label>
-              }
-              labelPosition="right"
-              size="large"
-              placeholder="Enter title here"
-              value={this.state.articleTitle}
-              onChange={e => this.setState({ articleTitle: e.target.value })}
-              aria-label="Article Title Input Box"
-            />
+
             <Divider hidden />
             <Button
               icon

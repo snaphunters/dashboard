@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Container, Divider } from "semantic-ui-react";
+import { Input, Container, Divider, Label } from "semantic-ui-react";
 import TextBlock from "./TextBlock";
 
 export default class ArticleTopic extends React.Component {
@@ -8,11 +8,18 @@ export default class ArticleTopic extends React.Component {
       <Container>
         <Input
           fluid
+          label={
+            <Label color="teal" pointing="right">
+              Title
+            </Label>
+          }
+          aria-label="Article Title Input Box"
+          labelPosition="left
+          "
           size="large"
           placeholder="Enter topic here"
           value={this.props.articleTitle}
           onChange={e => this.props.workingArticleTitle(e.target.value)}
-          aria-label="Article Title Input Box"
         ></Input>
         <Divider hidden />
         <TextBlock
