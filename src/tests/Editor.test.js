@@ -1,7 +1,15 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, wait } from "@testing-library/react";
 import Editor from "../container/Editor";
+import axios from "../utils/axios";
+import MockAdapter from "axios-mock-adapter";
+import HeaderBar from "../component/HeaderBar";
+import SavedModal from "../component/SavedModal";
+const mockAxios = new MockAdapter(axios);
 
+beforeEach(() => {
+  //mockAxios.restore();
+});
 describe("Editor.js", () => {
   test("<Editor> should render", () => {
     const { getByText } = render(<Editor />);
@@ -69,5 +77,21 @@ describe("Editor.js", () => {
     fireEvent.change(articleContentBlock, { target: { value: "lol" } });
     const articleContentBlockText = getByDisplayValue("lol");
     expect(articleContentBlockText.value).toEqual("lol");
+  });
+  test("should render 'successfully saved!' after axios is successfully", async () => {
+    const { getByText, getByLabelText } = render(<Editor />);
+    // axios.post = jest.fn();
+    // axios.post.mockImplementationOnce(() => Promise.resolve({}));
+    mockAxios
+      .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
+      .reply(201);
+
+    const textBlock = getByLabelText("Article Title Input Box");
+    fireEvent.change(textBlock, { target: { value: "Snapi" } });
+    const saveButton = getByLabelText("Save Button");
+    fireEvent.click(saveButton);
+    await wait(() => getByText("Successfully saved!"));
+    const successfulMessageModal = getByText("Successfully saved!");
+    expect(successfulMessageModal).toBeInTheDocument();
   });
 });
