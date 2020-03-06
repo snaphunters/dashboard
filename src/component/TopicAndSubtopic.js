@@ -14,8 +14,6 @@ export default class ArticleTopic extends React.Component {
             </Label>
           }
           aria-label="Article Title Input Box"
-          labelPosition="left
-          "
           size="large"
           placeholder="Enter topic here"
           value={this.props.articleTitle}
