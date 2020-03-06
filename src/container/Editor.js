@@ -1,14 +1,6 @@
 import React from "react";
 import "semantic-ui-css/semantic.min.css";
-import {
-  Container,
-  Divider,
-  Button,
-  Header,
-  Icon,
-  Input,
-  Label
-} from "semantic-ui-react";
+import { Container, Divider, Button, Header, Icon } from "semantic-ui-react";
 import TextBlock from "../component/TextBlock";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
@@ -54,9 +46,7 @@ class Editor extends React.Component {
         blocks: this.state.blocks,
         published: this.state.published
       };
-      console.log("hello there");
-      const res = await axios.post("/articles", articleDetails);
-      console.log(res);
+      await axios.post("/articles", articleDetails);
       this.setState({
         isSaved: true
       });
