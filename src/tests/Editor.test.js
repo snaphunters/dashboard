@@ -126,7 +126,7 @@ describe("Editor.js", () => {
     const saveButton = getByLabelText("Save Button");
     fireEvent.click(saveButton);
 
-    await wait(() =>
+    wait(() =>
       expect(
         getByText(
           "Your article might have the same title as an existing article."
