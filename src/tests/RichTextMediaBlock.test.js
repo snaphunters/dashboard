@@ -1,16 +1,17 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import App from "../App"
+import App from "../App";
+import CKEditor from "@ckeditor/ckeditor5-react";
+
 jest.mock("@ckeditor/ckeditor5-react");
-jest.mock("@ckeditor/ckeditor5-build-inline");
 
 describe("RichTextMediaBlock.js", () => {
   test("<RichTextMediaBlock> should render", () => {
     const { getByLabelText } = render(<App />);
     const addNewArticleButton = getByLabelText("Create New Article");
     fireEvent.click(addNewArticleButton);
-    const CKEditorComponent = getByLabelText("CKEditorContainer");
-    expect(CKEditorComponent).toBeInTheDocument();
+    CKEditor.mockReturnValueOnce();
+    expect(CKEditor).toHaveBeenCalled();
   });
   // test("Block <Input> Box shows user typed value", () => {
   //   const onEventMock = jest.fn();

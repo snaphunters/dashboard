@@ -1,7 +1,7 @@
 import { Container, Button, Segment, Divider } from "semantic-ui-react";
 import React from "react";
 import CKEditor from "@ckeditor/ckeditor5-react";
-import InlineEditor from "@ckeditor/ckeditor5-build-inline";
+import BalloonBlockEditor from "@ckeditor/ckeditor5-build-balloon-block";
 
 const RichTextMediaBlock = ({
   topicAndSubtopicArray,
@@ -11,17 +11,27 @@ const RichTextMediaBlock = ({
   const blockChange = (value, index) => {
     blocksArray[index] = value;
     updateArticleState(topicAndSubtopicArray);
-  }
+  };
   return blocksArray.map((CKString, blockArrayIndex) => {
     return (
       <Container key={blockArrayIndex}>
         <Divider hidden />
         <Segment aria-label="CKEditorContainer">
           <CKEditor
-            editor={InlineEditor}
+            editor={BalloonBlockEditor}
             data={CKString}
             onChange={(event, editor) => {
               blockChange(editor.getData(), blockArrayIndex);
+            }}
+            config={{
+              mediaEmbed: {
+                extraProviders: {
+                  name: "allow-all",
+                  url: /.*/,
+                  html: match =>
+                    `<video controls width="100%"><source src=${match} type="video/mp4"/> Sorry, your broswer does not support the &lt; video&gt; tag.</video>`
+                }
+              }
             }}
           />
         </Segment>

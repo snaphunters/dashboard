@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Container } from "semantic-ui-react";
-// import HeaderBar from "../component/HeaderBar";
+import { Container, Divider } from "semantic-ui-react";
+import HeaderBar from "../component/HeaderBar";
 // import axios from "../utils/axios";
 // import SavedModal from "../component/SavedModal";
 // import SaveErrorModal from "../component/SaveErrorModal";
@@ -94,6 +94,8 @@ class Editor extends React.Component {
   render = () => {
     return (
       <Container>
+        <HeaderBar />
+        <Divider hidden section={true} />
         <TopicAndSubtopic
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}
           updateArticleState={this.updateArticleState}
