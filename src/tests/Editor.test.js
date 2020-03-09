@@ -85,9 +85,7 @@ describe("Editor.js", () => {
     fireEvent.change(textBlock, { target: { value: "Snapi" } });
     const saveButton = getByLabelText("Save Button");
     fireEvent.click(saveButton);
-    await wait(() =>
-      expect(getByText("Successfully saved!")).toBeInTheDocument()
-    );
+    await (() => expect(getByText("Successfully saved!")).toBeInTheDocument());
   });
   test("should render Error message when axios fail to accept empty article title", async () => {
     const { getByText, getByLabelText } = render(<Editor />);
@@ -100,27 +98,38 @@ describe("Editor.js", () => {
     const saveButton = getByLabelText("Save Button");
     fireEvent.click(saveButton);
     await wait(() =>
-      expect(
-        getByText(
-          "Error! Your article might have the same title as an existing article or there is no title available."
-        )
-      ).toBeInTheDocument()
+      expect(getByText("Title cannot be empty.")).toBeInTheDocument()
     );
   });
-  test("should render Error message when axios fail to accept only spaces article title", async () => {
+  test("should render Error message when axios fail to accept whitespace only title", async () => {
     const { getByText, getByLabelText } = render(<Editor />);
     mockAxios
       .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
       .reply(400);
 
     const textBlock = getByLabelText("Article Title Input Box");
-    fireEvent.change(textBlock, { target: { value: "     " } });
+    fireEvent.change(textBlock, { target: { value: "       " } });
     const saveButton = getByLabelText("Save Button");
     fireEvent.click(saveButton);
     await wait(() =>
+      expect(getByText("Title cannot be empty.")).toBeInTheDocument()
+    );
+  });
+  test("should render Error message when article title already exist", async () => {
+    const { getByText, getByLabelText } = render(<Editor />);
+    mockAxios
+      .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
+      .reply(400);
+
+    const textBlock = getByLabelText("Article Title Input Box");
+    fireEvent.change(textBlock, { target: { value: "this is nic" } });
+    const saveButton = getByLabelText("Save Button");
+    fireEvent.click(saveButton);
+
+    await wait(() =>
       expect(
         getByText(
-          "Error! Your article might have the same title as an existing article or there is no title available."
+          "Your article might have the same title as an existing article."
         )
       ).toBeInTheDocument()
     );

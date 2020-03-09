@@ -5,7 +5,10 @@ import TextBlock from "../component/TextBlock";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
 import SavedModal from "../component/SavedModal";
-import SaveErrorModal from "../component/SaveErrorModal";
+import {
+  OnSaveTitleExistsErrorModal,
+  OnSaveNoTitleErrorModal
+} from "../component/SaveErrorModal";
 import { v4 as uuidv4 } from "uuid";
 import TopicAndSubtopic from "../component/TopicAndSubtopic";
 
@@ -19,7 +22,8 @@ class Editor extends React.Component {
       id: uuidv4(),
       blockContent: "",
       isSaved: false,
-      isSaveError: false
+      titleExistError: false,
+      noTitleError: false
     };
   }
 
@@ -35,7 +39,8 @@ class Editor extends React.Component {
     });
   };
   closeSaveModal = () => this.setState({ isSaved: false });
-  closeSaveErrorModal = () => this.setState({ isSaveError: false });
+  closeTitleExistError = () => this.setState({ titleExistError: false });
+  closeNoTitleError = () => this.setState({ noTitleError: false });
 
   publishArticle = async article => {
     try {
@@ -51,9 +56,15 @@ class Editor extends React.Component {
         isSaved: true
       });
     } catch (err) {
-      this.setState({
-        isSaveError: true
-      });
+      if (this.state.articleTitle.trim().length === 0) {
+        this.setState({
+          noTitleError: true
+        });
+      } else {
+        this.setState({
+          titleExistError: true
+        });
+      }
     }
   };
 
@@ -106,9 +117,13 @@ class Editor extends React.Component {
               isSaved={this.state.isSaved}
               onHandleSave={this.closeSaveModal}
             />
-            <SaveErrorModal
-              isSaveError={this.state.isSaveError}
-              onHandleSaveError={this.closeSaveErrorModal}
+            <OnSaveTitleExistsErrorModal
+              saveTitleExistError={this.state.titleExistError}
+              onHandleSaveTitleExistError={this.closeTitleExistError}
+            />
+            <OnSaveNoTitleErrorModal
+              noTitleError={this.state.noTitleError}
+              onHandleNoTitleError={this.closeNoTitleError}
             />
           </Container>
           <Divider hidden />
