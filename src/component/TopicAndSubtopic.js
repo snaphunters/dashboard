@@ -29,6 +29,7 @@ const TopicAndSubtopic = ({ topicAndSubtopicArray, updateArticleState }) => {
           topicAndSubtopicArray={topicAndSubtopicArray}
           updateArticleState={updateArticleState}
           blocksArray={blockArray}
+          topicSubtopicIndex={topicSubtopicIndex}
         />
       </Segment>
     );

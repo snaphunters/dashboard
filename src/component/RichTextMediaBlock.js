@@ -6,12 +6,19 @@ import BalloonBlockEditor from "@ckeditor/ckeditor5-build-balloon-block";
 const RichTextMediaBlock = ({
   topicAndSubtopicArray,
   updateArticleState,
-  blocksArray
+  blocksArray,
+  topicSubtopicIndex
 }) => {
   const blockChange = (value, index) => {
     blocksArray[index] = value;
     updateArticleState(topicAndSubtopicArray);
   };
+
+  const addBlock = index => {
+    blocksArray.splice(index + 1, 0, "");
+    updateArticleState(topicAndSubtopicArray);
+  };
+
   return blocksArray.map((CKString, blockArrayIndex) => {
     return (
       <Container key={blockArrayIndex}>
@@ -36,7 +43,11 @@ const RichTextMediaBlock = ({
             }}
           />
         </Segment>
-        <Button icon="plus circle" />
+        <Button
+          icon="plus circle"
+          aria-label={`add topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
+          onClick={() => addBlock(blockArrayIndex)}
+        />
       </Container>
     );
   });
