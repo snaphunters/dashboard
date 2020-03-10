@@ -77,9 +77,14 @@ workflows:
       - deploy-testenv:
           requires:
             - unit-test
+      - cypress-test:
+          requires:
+            - unit-test
+            - deploy-testenv
       - deploy-prod:
           requires:
             - unit-test
+            - cypress-test
           filters:
             branches:
               only:
