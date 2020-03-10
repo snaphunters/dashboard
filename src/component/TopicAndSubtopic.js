@@ -3,26 +3,26 @@ import { Input, Segment } from "semantic-ui-react";
 import RichTextMediaBlock from "./RichTextMediaBlock";
 
 const TopicAndSubtopic = ({ topicAndSubtopicArray, updateArticleState }) => {
-  const nameChange = (value, index) => {
-    topicAndSubtopicArray[index].name = value;
+  const titleChange = (value, index) => {
+    topicAndSubtopicArray[index].title = value;
     updateArticleState(topicAndSubtopicArray);
   };
 
   return topicAndSubtopicArray.map((topicSubtopicData, topicSubtopicIndex) => {
-    const { name, blockArray } = topicSubtopicData;
+    const { title, blockArray } = topicSubtopicData;
     const displayLabel = topicSubtopicIndex ? "SUB-TOPIC" : "TOPIC";
     const ariaLabel = topicSubtopicIndex ? "Sub-Topic Title" : "Topic Title";
     const size = topicSubtopicIndex ? "huge" : "massive";
     return (
       <Segment key={topicSubtopicIndex} aria-label="topicSubtopicContainer">
         <Input
-          value={name}
+          value={title}
           fluid
           placeholder="Enter a Title.."
           label={displayLabel}
           labelPosition="right"
           size={size}
-          onChange={e => nameChange(e.target.value, topicSubtopicIndex)}
+          onChange={e => titleChange(e.target.value, topicSubtopicIndex)}
           aria-label={ariaLabel}
         />
         <RichTextMediaBlock
@@ -33,32 +33,6 @@ const TopicAndSubtopic = ({ topicAndSubtopicArray, updateArticleState }) => {
       </Segment>
     );
   });
-
-  // render() {
-  //   return (
-  //     <Container>
-  //       <Input
-  //         fluid
-  //         label={
-  //           <Label color="teal" pointing="right">
-  //             Title
-  //           </Label>
-  //         }
-  //         aria-label="Article Title Input Box"
-  //         size="large"
-  //         placeholder="Enter topic here"
-  //         value={this.props.articleTitle}
-  //         onChange={e => this.props.workingArticleTitle(e.target.value)}
-  //       ></Input>
-  //       <Divider hidden />
-  //       <TextBlock
-  //         value={this.props.id}
-  //         updateInputText={this.props.blockContent}
-  //       />
-  //       <Divider hidden />
-  //     </Container>
-  //   );
-  // }
 };
 
 export default TopicAndSubtopic;

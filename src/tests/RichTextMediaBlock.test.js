@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import RichTextMediaBlock from "../component/RichTextMediaBlock";
 
@@ -20,7 +20,7 @@ const blockArray = [""];
 
 describe("RichTextMediaBlock.js", () => {
   test("<RichTextMediaBlock> should render", () => {
-    const { getByLabelText } = render(
+    render(
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={updateArticleState}

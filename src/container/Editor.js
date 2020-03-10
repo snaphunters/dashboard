@@ -2,25 +2,27 @@ import React from "react";
 
 import { Container, Divider } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
-// import axios from "../utils/axios";
-// import SavedModal from "../component/SavedModal";
-// import SaveErrorModal from "../component/SaveErrorModal";
+import axios from "../utils/axios";
+import SavedModal from "../component/SavedModal";
+import {
+  ErrorModalDuplicateTitle,
+  ErrorModalNoTitle
+} from "../component/SaveErrorModal";
 import TopicAndSubtopic from "../component/TopicAndSubtopic";
 
 class Editor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // blocks: {},
-      // blocksrendered: [],
-      // blockContent: "",
+      modalState: { noTitleError: false, duplicateTitleError: false },
+      editorState: { isSaved: false, isPublished: false },
       topicAndSubtopicArray: [
         {
-          name: "",
+          title: "",
           blockArray: [""]
         },
         {
-          name: "",
+          title: "",
           blockArray: [""]
         }
       ]
@@ -32,115 +34,69 @@ class Editor extends React.Component {
       topicAndSubtopicArray: newTopicAndSubtopicArray
     });
   };
-  /////////////////////
-  // setArticleTitle = value => {
-  //   this.setState({
-  //     articleTitle: value
-  //   });
-  // };
 
-  // publishArticle = async article => {
-  //   try {
-  //     const articleDetails = {
-  //       title: this.state.articleTitle,
-  //       categories: this.state.categories,
-  //       subCategories: this.state.subCategories,
-  //       blocks: this.state.blocks,
-  //       published: this.state.published
-  //     };
-  //     console.log("hello there");
-  //     const res = await axios.post("/articles", articleDetails);
-  //     console.log(res);
-  //     this.setState({
-  //       isSaved: true
-  //     });
-  //   } catch (err) {
-  //     this.setState({
-  //       isSaveError: true
-  //     });
-  //   }
-  // };
+  closeError = () => {
+    this.setState({
+      modalState: { duplicateTitleError: false, noTitleError: false }
+    });
+  };
+  closeSaveModal = () => {
+    this.setState({
+      editorState: { isSaved: false }
+    });
+  };
 
-  // setBlockContent = value => {
-  //   this.setState({
-  //     blockContent: value
-  //   });
-  // };
+  saveDraft = async () => {
+    try {
+      const articleDetails = {
+        isPublished: false,
+        title: this.state.topicAndSubtopicArray[0].title,
+        topicAndSubtopicArray: this.state.topicAndSubtopicArray
+      };
+      const updatedEditorState = {
+        isSaved: true,
+        isPublished: false
+      };
+      if (this.state.topicAndSubtopicArray[0].title.trim().length === 0) {
+        this.setState({
+          modalState: { noTitleError: true }
+        });
+      } else {
+        await axios.post("/articles", articleDetails);
+        this.setState({ editorState: updatedEditorState });
+      }
+    } catch (error) {
+      if (error.response.status === 422) {
+        this.setState({
+          modalState: { duplicateTitleError: true }
+        });
+      }
+      console.log(error);
+    }
+  };
 
-  // insertBlock = () => {
-  //   const index = this.state.blocksrendered.length;
-  //   const renderArr = this.state.blocksrendered;
-  //   renderArr.push(
-  //     <Container>
-  //       <RichTextMediaBlock
-  //         key={index}
-  //         updateInputInBlock={this.updateInputInBlock}
-  //         index={index}
-  //       />
-  //       <Button icon onClick={this.insertBlock} aria-label="Add Text Button">
-  //         <Icon name="text cursor" />
-  //       </Button>
-  //     </Container>
-  //   );
-  //   this.setState({ blocksrendered: renderArr });
-  // };
-
-  // updateInputInBlock = (index, value) => {
-  //   const blockobj = this.state.blocks;
-  //   blockobj[index] = { blockData: value };
-  //   this.setState({ blocks: blockobj });
-  // };
-  /////////////////
   render = () => {
     return (
       <Container aria-label="Editor">
-        <HeaderBar />
+        <HeaderBar saveDraft={this.saveDraft} />
         <Divider hidden section={true} />
         <TopicAndSubtopic
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}
           updateArticleState={this.updateArticleState}
         />
+        <SavedModal
+          isSaved={this.state.editorState.isSaved}
+          closeSave={this.closeSaveModal}
+        />
+        <ErrorModalDuplicateTitle
+          showDuplicateTitleError={this.state.modalState.duplicateTitleError}
+          closeError={this.closeError}
+        />
+        <ErrorModalNoTitle
+          showNoTitleError={this.state.modalState.noTitleError}
+          closeError={this.closeError}
+        />
       </Container>
-
-      // <Container>
-      //   <HeaderBar saveDraft={this.publishArticle} />
-      //   <Container>
-      //     <Divider hidden />
-      //     <Divider hidden />
-      //     <Divider hidden />
-      //     <Container textAlign="center">
-      //       <Header as="h1">Editor</Header>
-      //       <Container className="debugger">
-      //         <TopicAndSubtopic
-      //           id={this.state.id}
-      //           blockContent={this.setBlockContent}
-      //           workingArticleTitle={this.setArticleTitle}
-      //         />
-      //       </Container>
-      //       <Input
-      //         label="Article Title: "
-      //         size="large"
-      //         placeholder="Enter title here"
-      //         value={articleTitle}
-      //         onChange={e => this.setState({ articleTitle: e.target.value })}
-      //         aria-label="Article Title Input Box"
-      //       ></Input>
-      //       <Button
-      //         icon
-      //         onClick={this.insertBlock}
-      //         aria-label="Add SubTopic Button"
-      //       >
-      //         <Icon name="plus" />
-      //       </Button>
-      //       <Divider hidden />
-      //     </Container>
-      //     <Divider hidden />
-      //   </Container>
-      //   <Container textAlign="center" aria-label="Main Article Container">
-      //     <Segment>{this.state.blocksrendered}</Segment>
-      //     <Divider hidden />
-      //   </Container>
-      // </Container>
     );
   };
 }
