@@ -1,6 +1,6 @@
 describe("Dashboard", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/");
+    cy.visit("https://snaphunt-demo-react-testenv.herokuapp.com/");
   });
 
   it("should render the text 'Dashboard'", () => {
