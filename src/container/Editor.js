@@ -93,7 +93,7 @@ class Editor extends React.Component {
   /////////////////
   render = () => {
     return (
-      <Container>
+      <Container aria-label="Editor">
         <HeaderBar />
         <Divider hidden section={true} />
         <TopicAndSubtopic

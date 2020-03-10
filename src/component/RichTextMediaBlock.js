@@ -21,6 +21,7 @@ const RichTextMediaBlock = ({
             editor={BalloonBlockEditor}
             data={CKString}
             onChange={(event, editor) => {
+              /* istanbul ignore next line */
               blockChange(editor.getData(), blockArrayIndex);
             }}
             config={{
@@ -28,7 +29,7 @@ const RichTextMediaBlock = ({
                 extraProviders: {
                   name: "allow-all",
                   url: /.*/,
-                  html: match =>
+                  html: /* istanbul ignore next */ match =>
                     `<video controls width="100%"><source src=${match} type="video/mp4"/> Sorry, your broswer does not support the &lt; video&gt; tag.</video>`
                 }
               }

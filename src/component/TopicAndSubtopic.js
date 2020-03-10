@@ -10,18 +10,20 @@ const TopicAndSubtopic = ({ topicAndSubtopicArray, updateArticleState }) => {
 
   return topicAndSubtopicArray.map((topicSubtopicData, topicSubtopicIndex) => {
     const { name, blockArray } = topicSubtopicData;
-    const label = topicSubtopicIndex ? "SUB-TOPIC" : "TOPIC";
+    const displayLabel = topicSubtopicIndex ? "SUB-TOPIC" : "TOPIC";
+    const ariaLabel = topicSubtopicIndex ? "Sub-Topic Title" : "Topic Title";
     const size = topicSubtopicIndex ? "huge" : "massive";
     return (
-      <Segment key={topicSubtopicIndex}>
+      <Segment key={topicSubtopicIndex} aria-label="topicSubtopicContainer">
         <Input
           value={name}
           fluid
           placeholder="Enter a Title.."
-          label={label}
+          label={displayLabel}
           labelPosition="right"
           size={size}
           onChange={e => nameChange(e.target.value, topicSubtopicIndex)}
+          aria-label={ariaLabel}
         />
         <RichTextMediaBlock
           topicAndSubtopicArray={topicAndSubtopicArray}

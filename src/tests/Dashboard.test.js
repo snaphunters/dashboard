@@ -1,7 +1,5 @@
 import React from "react";
-
 import { render, fireEvent } from "@testing-library/react";
-import App from "../App";
 import Dashboard from "../container/Dashboard";
 
 describe("Dashboard.js", () => {
@@ -15,11 +13,13 @@ describe("Dashboard.js", () => {
     const addNewArticleButton = getByLabelText("Create New Article");
     expect(addNewArticleButton).toBeInTheDocument();
   });
-  test("Click Create New Article <Button> should render <Editor>", () => {
-    const { getByLabelText, getByText } = render(<App />);
+  test("Test functionality of Create New Article Button", () => {
+    const createNewArticle = jest.fn();
+    const { getByLabelText } = render(
+      <Dashboard createNewArticle={createNewArticle} />
+    );
     const addNewArticleButton = getByLabelText("Create New Article");
     fireEvent.click(addNewArticleButton);
-    const EditorComponent = getByText("Editor");
-    expect(EditorComponent).toBeInTheDocument();
+    expect(createNewArticle).toHaveBeenCalled();
   });
 });
