@@ -7,8 +7,6 @@
     "node": "12.16.1"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-balloon-block": "^17.0.0",
-    "@ckeditor/ckeditor5-image": "^17.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@enwee/ckeditor5-build-balloon-block": "0.0.1",
     "@testing-library/jest-dom": "^4.2.4",

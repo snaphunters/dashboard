@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import RichTextMediaBlock from "../component/RichTextMediaBlock";
+import Editor from "../container/Editor";
 jest.mock("@ckeditor/ckeditor5-react");
 
 const topicAndSubtopicArray = [
@@ -14,7 +15,8 @@ const topicAndSubtopicArray = [
     blockArray: [""]
   }
 ];
-const updateArticleState = jest.fn();
+const mockUpdateArticleState = jest.fn();
+
 const blockArray = [""];
 
 describe("RichTextMediaBlock.js", () => {
@@ -22,7 +24,7 @@ describe("RichTextMediaBlock.js", () => {
     render(
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
-        updateArticleState={updateArticleState}
+        updateArticleState={mockUpdateArticleState}
         blocksArray={blockArray}
       />
     );
@@ -34,11 +36,11 @@ describe("RichTextMediaBlock.js", () => {
     const { getByLabelText } = render(
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
-        updateArticleState={updateArticleState}
+        updateArticleState={mockUpdateArticleState}
         blocksArray={blockArray}
       />
     );
-    const ckEditorContainer = getByLabelText("CKEditorContainer");
+    const ckEditorContainer = getByLabelText("CKEditorContainer 0");
     expect(ckEditorContainer).toBeInTheDocument();
   });
   test("addBlock should make testBlockArray have 2 blocks in total", () => {
@@ -46,7 +48,7 @@ describe("RichTextMediaBlock.js", () => {
     const { getByLabelText } = render(
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
-        updateArticleState={updateArticleState}
+        updateArticleState={mockUpdateArticleState}
         blocksArray={testBlockArray}
         topicSubtopicIndex={0}
       />
@@ -63,7 +65,7 @@ describe("RichTextMediaBlock.js", () => {
     const { getByLabelText } = render(
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
-        updateArticleState={updateArticleState}
+        updateArticleState={mockUpdateArticleState}
         blocksArray={testBlockArray}
         topicSubtopicIndex={0}
       />
@@ -73,5 +75,42 @@ describe("RichTextMediaBlock.js", () => {
     );
     fireEvent.click(buttonComponent);
     expect(testBlockArray).toStrictEqual(expectedBlockArray);
+  });
+  test("delete button should not be available for first block of any topic/subtopic", () => {
+    const topicIndex = 0;
+    const testBlockArray = ["first block text"];
+    const { queryByLabelText } = render(
+      <RichTextMediaBlock
+        topicAndSubtopicArray={topicAndSubtopicArray}
+        updateArticleState={mockUpdateArticleState}
+        blocksArray={testBlockArray}
+        topicSubtopicIndex={topicIndex}
+      />
+    );
+    const buttonComponent = queryByLabelText(
+      "delete topicSubtopic 0 block button 0"
+    );
+    expect(buttonComponent).toBe(null);
+  });
+  test("delete button should be available for non-first blocks of any topic/subtopic ", () => {
+    const { getByLabelText } = render(<Editor />);
+    const addButton = getByLabelText("add topicSubtopic 0 block button 0");
+    fireEvent.click(addButton);
+    const deleteButton = getByLabelText(
+      "delete topicSubtopic 0 block button 1"
+    );
+    expect(deleteButton).toBeInTheDocument();
+  });
+
+  test("click delete button should remmove corresponding block", () => {
+    const { getByLabelText } = render(<Editor />);
+    const addButton = getByLabelText("add topicSubtopic 0 block button 0");
+    fireEvent.click(addButton);
+    const deleteButton = getByLabelText(
+      "delete topicSubtopic 0 block button 1"
+    );
+    const newAddedBlock = getByLabelText("CKEditorContainer 1");
+    fireEvent.click(deleteButton);
+    expect(newAddedBlock).not.toBeInTheDocument();
   });
 });

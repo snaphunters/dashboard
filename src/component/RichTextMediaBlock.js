@@ -20,11 +20,16 @@ const RichTextMediaBlock = ({
     updateArticleState(topicAndSubtopicArray);
   };
 
+  const deleteBlock = index => {
+    blocksArray.splice(index, 1);
+    updateArticleState(topicAndSubtopicArray);
+  };
+
   return blocksArray.map((CKString, blockArrayIndex) => {
     return (
       <Container key={blockArrayIndex}>
         <Divider hidden />
-        <Segment aria-label="CKEditorContainer">
+        <Segment aria-label={`CKEditorContainer ${blockArrayIndex} `}>
           <CKEditor
             editor={Editor}
             data={CKString}
@@ -35,11 +40,21 @@ const RichTextMediaBlock = ({
             config={ckeditor5Config}
           />
         </Segment>
+
         <Button
           icon="plus circle"
           aria-label={`add topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
           onClick={() => addBlock(blockArrayIndex)}
         />
+        {blockArrayIndex ? (
+          <Button
+            icon="trash"
+            aria-label={`delete topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
+            onClick={() => deleteBlock(blockArrayIndex)}
+          />
+        ) : (
+          ""
+        )}
       </Container>
     );
   });
