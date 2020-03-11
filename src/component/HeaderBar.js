@@ -2,7 +2,14 @@ import React from "react";
 import { Button, Menu, Divider } from "semantic-ui-react";
 const HeaderBar = ({ saveDraft, addSubtopicContainer, topicSubtopicIndex }) => (
   <>
-    <Menu inverted color="teal" fixed="top" borderless size="large">
+    <Menu
+      data-testid="HeaderBar"
+      inverted
+      color="teal"
+      fixed="top"
+      borderless
+      size="large"
+    >
       <Menu.Item position="right">
         <Button onClick={saveDraft} aria-label="Save Button">
           Save as Draft
