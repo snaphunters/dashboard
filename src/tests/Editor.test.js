@@ -123,15 +123,12 @@ describe("Editor.js", () => {
     fireEvent.change(subtopicTitleInputBox, { target: { value: "Snapi2" } });
     const saveButton = getByLabelText("Save Button");
     fireEvent.click(saveButton);
-    await wait(() =>
-      getByText(
-        "Your article might have the same title as an existing article."
-      )
+    wait(() =>
+      expect(
+        getByText(
+          "Your article might have the same title as an existing article."
+        )
+      ).toBeInTheDocument()
     );
-    expect(
-      getByText(
-        "Your article might have the same title as an existing article."
-      )
-    ).toBeInTheDocument();
   });
 });
