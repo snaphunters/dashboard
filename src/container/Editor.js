@@ -9,7 +9,7 @@ import {
   ErrorModalNoTitle
 } from "../component/SaveErrorModal";
 import TopicAndSubtopic from "../component/TopicAndSubtopic";
-
+import { v4 as uuidv4 } from "uuid";
 class Editor extends React.Component {
   constructor(props) {
     super(props);
@@ -18,10 +18,12 @@ class Editor extends React.Component {
       editorState: { isSaved: false, isPublished: false },
       topicAndSubtopicArray: [
         {
+          containerId: uuidv4(),
           title: "",
           blockArray: [""]
         },
         {
+          containerId: uuidv4(),
           title: "",
           blockArray: [""]
         }
