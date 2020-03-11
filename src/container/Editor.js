@@ -77,7 +77,10 @@ class Editor extends React.Component {
   render = () => {
     return (
       <Container aria-label="Editor">
-        <HeaderBar saveDraft={this.saveDraft} />
+        <HeaderBar
+          saveDraft={this.saveDraft}
+          addSubtopicContainer={this.addSubtopicContainer}
+        />
         <Divider hidden section={true} />
         <TopicAndSubtopic
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}

@@ -7,25 +7,25 @@ import ckeditor5Config from "../utils/ckeditor5config";
 const RichTextMediaBlock = ({
   topicAndSubtopicArray,
   updateArticleState,
-  blocksArray,
+  blockArray,
   topicSubtopicIndex
 }) => {
   const blockChange = (value, index) => {
-    blocksArray[index] = value;
+    blockArray[index] = value;
     updateArticleState(topicAndSubtopicArray);
   };
 
   const addBlock = index => {
-    blocksArray.splice(index + 1, 0, "");
+    blockArray.splice(index + 1, 0, "");
     updateArticleState(topicAndSubtopicArray);
   };
 
   const deleteBlock = index => {
-    blocksArray.splice(index, 1);
+    blockArray.splice(index, 1);
     updateArticleState(topicAndSubtopicArray);
   };
 
-  return blocksArray.map((CKString, blockArrayIndex) => {
+  return blockArray.map((CKString, blockArrayIndex) => {
     return (
       <Container key={blockArrayIndex}>
         <Divider hidden />

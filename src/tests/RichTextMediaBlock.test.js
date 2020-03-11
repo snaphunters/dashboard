@@ -32,7 +32,7 @@ describe("RichTextMediaBlock.js", () => {
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
-        blocksArray={blockArray}
+        blockArray={blockArray}
       />
     );
     const mockCKEditor = getByLabelText("mockCKEditor");
@@ -45,7 +45,7 @@ describe("RichTextMediaBlock.js", () => {
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
-        blocksArray={blockArray}
+        blockArray={blockArray}
       />
     );
     const ckEditorContainer = getByLabelText("CKEditorContainer 0");
@@ -57,7 +57,7 @@ describe("RichTextMediaBlock.js", () => {
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
-        blocksArray={testBlockArray}
+        blockArray={testBlockArray}
         topicSubtopicIndex={0}
       />
     );
@@ -74,7 +74,7 @@ describe("RichTextMediaBlock.js", () => {
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
-        blocksArray={testBlockArray}
+        blockArray={testBlockArray}
         topicSubtopicIndex={0}
       />
     );
@@ -91,7 +91,7 @@ describe("RichTextMediaBlock.js", () => {
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
-        blocksArray={testBlockArray}
+        blockArray={testBlockArray}
         topicSubtopicIndex={topicIndex}
       />
     );

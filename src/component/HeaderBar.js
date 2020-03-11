@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Menu, Divider } from "semantic-ui-react";
-const HeaderBar = ({ saveDraft }) => (
+const HeaderBar = ({ saveDraft, addSubtopicContainer, topicSubtopicIndex }) => (
   <>
     <Menu inverted color="teal" fixed="top" borderless size="large">
       <Menu.Item position="right">
