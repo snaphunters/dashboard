@@ -1,7 +1,8 @@
 import { Container, Button, Segment, Divider } from "semantic-ui-react";
 import React from "react";
 import CKEditor from "@ckeditor/ckeditor5-react";
-import BalloonBlockEditor from "@ckeditor/ckeditor5-build-balloon-block";
+import Editor from "@enwee/ckeditor5-build-balloon-block";
+import ckeditor5Config from "../utils/ckeditor5config";
 
 const RichTextMediaBlock = ({
   topicAndSubtopicArray,
@@ -25,22 +26,13 @@ const RichTextMediaBlock = ({
         <Divider hidden />
         <Segment aria-label="CKEditorContainer">
           <CKEditor
-            editor={BalloonBlockEditor}
+            editor={Editor}
             data={CKString}
             onChange={(event, editor) => {
               /* istanbul ignore next line */
               blockChange(editor.getData(), blockArrayIndex);
             }}
-            config={{
-              mediaEmbed: {
-                extraProviders: {
-                  name: "allow-all",
-                  url: /.*/,
-                  html: /* istanbul ignore next */ match =>
-                    `<video controls width="100%"><source src=${match} type="video/mp4"/> Sorry, your broswer does not support the &lt; video&gt; tag.</video>`
-                }
-              }
-            }}
+            config={ckeditor5Config}
           />
         </Segment>
         <Button
