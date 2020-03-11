@@ -34,7 +34,7 @@ describe("Dashboard.js", () => {
     expect(articleTitleContainer).toBeInTheDocument();
   });
 
-  test.only("Should render article titles", async () => {
+  test("Should render article titles", async () => {
     const expectedTitle = "This is a title";
     mockAxios
       .onGet("https://snaphunt-demo-backend.herokuapp.com/articles")
