@@ -45,14 +45,12 @@ const RichTextMediaBlock = ({
           aria-label={`add topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
           onClick={() => addBlock(blockArrayIndex)}
         />
-        {blockArrayIndex ? (
+        {Boolean(blockArrayIndex) && (
           <Button
             icon="trash"
             aria-label={`delete topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
             onClick={() => deleteBlock(blockArrayIndex)}
           />
-        ) : (
-          ""
         )}
       </Container>
     );

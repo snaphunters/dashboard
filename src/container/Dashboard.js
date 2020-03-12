@@ -1,9 +1,38 @@
 import React from "react";
-import { Button, Container, Header } from "semantic-ui-react";
+import {
+  Button,
+  Container,
+  Header,
+  Segment,
+  Menu,
+  Label
+} from "semantic-ui-react";
+import axios from "axios";
 
 class Dashboard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      articleArray: []
+    };
+  }
+
+  componentDidMount() {
+    axios
+      .get("https://snaphunt-demo-backend.herokuapp.com/articles")
+      .then(response => {
+        this.setState({
+          articleArray: response.data
+        });
+      })
+      .catch(error => {
+        return error;
+      });
+  }
+
   render = () => {
     const { createNewArticle } = this.props;
+    const { articleArray } = this.state;
     return (
       <Container textAlign="center">
         <Header as="h1">Dashboard</Header>
@@ -12,6 +41,32 @@ class Dashboard extends React.Component {
           icon="plus circle"
           aria-label="Create New Article"
         ></Button>
+        <Container>
+          <Menu
+            aria-label="article-title-container"
+            vertical
+            fluid
+            size="massive"
+          >
+            {articleArray.map((item, idx) => {
+              return (
+                <Segment aria-label="article-title" key={item._id}>
+                  <Menu.Item horizontal="true">
+                    <Header as="h2">
+                      {idx + 1}. {item.title}
+                    </Header>
+                    <Label
+                      aria-label="article-publish-status"
+                      aria-hidden="false"
+                    >
+                      {item.isPublished === false ? "DRAFT" : "PUBLISHED"}
+                    </Label>
+                  </Menu.Item>
+                </Segment>
+              );
+            })}
+          </Menu>
+        </Container>
       </Container>
     );
   };
