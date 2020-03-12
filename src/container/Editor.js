@@ -82,6 +82,7 @@ class Editor extends React.Component {
         <HeaderBar
           saveDraft={this.saveDraft}
           addSubtopicContainer={this.addSubtopicContainer}
+          returnToDash={this.props.returnToDashboard}
         />
         <Divider hidden section />
         <TopicAndSubtopic

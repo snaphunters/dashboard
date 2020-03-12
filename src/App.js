@@ -17,11 +17,18 @@ class App extends React.Component {
     this.setState({ showEditor: !this.state.showEditor });
   };
 
+  returnToDashboard = () => {
+    this.setState({ showEditor: false });
+  };
+
   render = () => {
     return (
       <Container>
         {this.state.showEditor ? (
-          <Editor articleId={this.state.articleId} />
+          <Editor
+            articleId={this.state.articleId}
+            returnToDashboard={this.returnToDashboard}
+          />
         ) : (
           <Dashboard createNewArticle={this.createNewArticle} />
         )}

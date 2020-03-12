@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, wait } from "@testing-library/react";
+import { render, fireEvent, wait, within } from "@testing-library/react";
 import Editor from "../container/Editor";
 import axios from "../utils/axios";
 import MockAdapter from "axios-mock-adapter";
@@ -124,5 +124,26 @@ describe("Editor.js", () => {
         )
       ).toBeInTheDocument()
     );
+  });
+  test("Return to Dashboard <Button> should render", () => {
+    const { getByLabelText } = render(<Editor />);
+    const returnToDashContainer = getByLabelText("return to dashboard");
+    const returnToDashBtn = within(returnToDashContainer).getByLabelText(
+      "Return to Dashboard"
+    );
+    expect(returnToDashBtn).toBeInTheDocument();
+  });
+
+  test("Return to Dashboard <Button> should return to dashboard on click", async () => {
+    const returnToDashboard = jest.fn();
+    const { getByLabelText } = render(
+      <Editor returnToDashboard={returnToDashboard} />
+    );
+    const returnToDashContainer = getByLabelText("return to dashboard");
+    const returnToDashBtn = within(returnToDashContainer).getByLabelText(
+      "Return to Dashboard"
+    );
+    fireEvent.click(returnToDashBtn);
+    expect(returnToDashboard).toHaveBeenCalled();
   });
 });

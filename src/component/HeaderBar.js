@@ -1,6 +1,11 @@
 import React from "react";
 import { Button, Menu } from "semantic-ui-react";
-const HeaderBar = ({ saveDraft, addSubtopicContainer, topicSubtopicIndex }) => (
+const HeaderBar = ({
+  saveDraft,
+  addSubtopicContainer,
+  topicSubtopicIndex,
+  returnToDash
+}) => (
   <>
     <Menu
       data-testid="HeaderBar"
@@ -13,6 +18,11 @@ const HeaderBar = ({ saveDraft, addSubtopicContainer, topicSubtopicIndex }) => (
       <Menu.Item position="right">
         <Button onClick={saveDraft} aria-label="Save Button">
           Save as Draft
+        </Button>
+      </Menu.Item>
+      <Menu.Item aria-label="return to dashboard">
+        <Button onClick={returnToDash} aria-label="Return to Dashboard">
+          Back to Dashboard
         </Button>
       </Menu.Item>
     </Menu>
