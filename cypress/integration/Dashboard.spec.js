@@ -8,8 +8,4 @@ describe("Dashboard", () => {
       .contains("Dashboard")
       .should("be.visible");
   });
-
-  it("should render the + button", () => {
-    cy.get("button.ui.icon.button").should("be.visible");
-  });
 });
