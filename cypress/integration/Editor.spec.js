@@ -10,5 +10,4 @@ describe("Editor", () => {
   it("should render save draft button on the HeaderBar", () => {
     cy.get('button[aria-label="Save Button"]').should("be.visible");
   });
-  
 });
