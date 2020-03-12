@@ -1,6 +1,5 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import CKEditor from "@ckeditor/ckeditor5-react";
 import RichTextMediaBlock from "../component/RichTextMediaBlock";
 import Editor from "../container/Editor";
 jest.mock("@ckeditor/ckeditor5-react", () => {
@@ -35,15 +34,16 @@ const blockArray = [""];
 
 describe("RichTextMediaBlock.js", () => {
   test("<RichTextMediaBlock> should render", () => {
-    render(
+    const { getByLabelText } = render(
       <RichTextMediaBlock
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
         blockArray={blockArray}
       />
     );
-    CKEditor.mockReturnValueOnce();
-    expect(CKEditor).toHaveBeenCalled();
+    const mockCKEditor = getByLabelText("mockCKEditor");
+
+    expect(mockCKEditor).toBeInTheDocument();
   });
   test("<CKEditorContainer> should render", () => {
     const { getByLabelText } = render(
