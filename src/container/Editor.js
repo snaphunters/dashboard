@@ -72,7 +72,7 @@ class Editor extends React.Component {
           modalState: { duplicateTitleError: true }
         });
       }
-      console.log(error);
+      return error;
     }
   };
 
