@@ -17,6 +17,10 @@ const TopicAndSubtopic = ({ topicAndSubtopicArray, updateArticleState }) => {
     });
     updateArticleState(topicAndSubtopicArray);
   };
+  const deleteSubtopicContainer = index => {
+    topicAndSubtopicArray.splice(index, 1);
+    updateArticleState(topicAndSubtopicArray);
+  };
 
   return topicAndSubtopicArray.map((topicSubtopicData, topicSubtopicIndex) => {
     const { title, blockArray, containerId } = topicSubtopicData;
@@ -26,7 +30,7 @@ const TopicAndSubtopic = ({ topicAndSubtopicArray, updateArticleState }) => {
     return (
       <Container key={containerId}>
         <Divider hidden />
-        <Segment aria-label="topicSubtopicContainer">
+        <Segment aria-label={`topicSubtopicContainer ${topicSubtopicIndex}`}>
           <Input
             value={title}
             fluid
@@ -49,8 +53,17 @@ const TopicAndSubtopic = ({ topicAndSubtopicArray, updateArticleState }) => {
           compact
           icon="plus circle"
           onClick={() => addSubtopicContainer(topicSubtopicIndex)}
-          aria-label="Add subtopic container button"
+          aria-label={`Add subtopic container button ${topicSubtopicIndex}`}
         />
+        {Boolean(topicSubtopicIndex) && (
+          <Button
+            basic
+            compact
+            icon="trash"
+            onClick={() => deleteSubtopicContainer(topicSubtopicIndex)}
+            aria-label={`Delete subtopic container button ${topicSubtopicIndex}`}
+          />
+        )}
       </Container>
     );
   });
