@@ -64,9 +64,7 @@ describe("Editor.js", () => {
 
   test("should render 'successfully saved!' after axios is successfully", async () => {
     const { getByText, getByLabelText } = render(<Editor />);
-    mockAxios
-      .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
-      .reply(201);
+    mockAxios.onPost("/articles").reply(201);
     const topicTitleInputBox = getByLabelText("Topic Title");
     const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
     fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
@@ -80,9 +78,7 @@ describe("Editor.js", () => {
 
   test("Save modal box should close when clicked", async () => {
     const { queryByText, getByLabelText } = render(<Editor />);
-    mockAxios
-      .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
-      .reply(201);
+    mockAxios.onPost("/articles").reply(201);
     const topicTitleInputBox = getByLabelText("Topic Title");
     const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
     fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
@@ -113,9 +109,7 @@ describe("Editor.js", () => {
   });
 
   test("should render Error message when axios fail to accept duplicate article title", async () => {
-    mockAxios
-      .onPost("https://snaphunt-demo-backend.herokuapp.com/articles")
-      .reply(422);
+    mockAxios.onPost("/articles").reply(422);
     const { getByText, getByLabelText } = render(<Editor />);
     const topicTitleInputBox = getByLabelText("Topic Title");
     const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
