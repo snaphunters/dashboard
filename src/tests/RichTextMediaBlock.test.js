@@ -3,12 +3,18 @@ import { render, fireEvent } from "@testing-library/react";
 import RichTextMediaBlock from "../component/RichTextMediaBlock";
 import Editor from "../container/Editor";
 jest.mock("@ckeditor/ckeditor5-react", () => {
-  const hello = () => {
-    return <div aria-label="mockCKEditor"></div>;
+  const mockCKEditor = ({ data, onChange }) => {
+    return (
+      <input
+        aria-label="mockCKEditor"
+        value={data}
+        onChange={e => onChange(null, { getData: () => e.target.value })}
+      />
+    );
   };
   return {
     __esModule: true,
-    default: hello
+    default: mockCKEditor
   };
 });
 
@@ -39,7 +45,6 @@ describe("RichTextMediaBlock.js", () => {
 
     expect(mockCKEditor).toBeInTheDocument();
   });
-
   test("<CKEditorContainer> should render", () => {
     const { getByLabelText } = render(
       <RichTextMediaBlock
@@ -120,5 +125,12 @@ describe("RichTextMediaBlock.js", () => {
     const newAddedBlock = getByLabelText("CKEditorContainer 1");
     fireEvent.click(deleteButton);
     expect(newAddedBlock).not.toBeInTheDocument();
+  });
+  test("type into block should reflect changes", () => {
+    const { getAllByLabelText, getByDisplayValue } = render(<Editor />);
+    const mockCKEditor = getAllByLabelText("mockCKEditor");
+    fireEvent.change(mockCKEditor[0], { target: { value: "some Ck text" } });
+    const mockCKEditorText = getByDisplayValue("some Ck text");
+    expect(mockCKEditorText).toBeInTheDocument();
   });
 });

@@ -34,7 +34,6 @@ const RichTextMediaBlock = ({
             editor={Editor}
             data={CKString}
             onChange={(event, editor) => {
-              /* istanbul ignore next line */
               blockChange(editor.getData(), blockArrayIndex);
             }}
             config={ckeditor5Config}

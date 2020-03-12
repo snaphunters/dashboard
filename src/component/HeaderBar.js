@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Menu, Divider } from "semantic-ui-react";
+import { Button, Menu } from "semantic-ui-react";
 const HeaderBar = ({ saveDraft, addSubtopicContainer, topicSubtopicIndex }) => (
   <>
     <Menu
@@ -16,10 +16,6 @@ const HeaderBar = ({ saveDraft, addSubtopicContainer, topicSubtopicIndex }) => (
         </Button>
       </Menu.Item>
     </Menu>
-    <Divider hidden />
-    <Divider hidden />
-    <Divider hidden />
-    <Divider hidden />
   </>
 );
 

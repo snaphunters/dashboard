@@ -1,5 +1,4 @@
 import React from "react";
-
 import { Container, Divider } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
@@ -83,7 +82,7 @@ class Editor extends React.Component {
           saveDraft={this.saveDraft}
           addSubtopicContainer={this.addSubtopicContainer}
         />
-        <Divider hidden section={true} />
+        <Divider hidden section />
         <TopicAndSubtopic
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}
           updateArticleState={this.updateArticleState}
