@@ -7,7 +7,7 @@ import {
   Menu,
   Label
 } from "semantic-ui-react";
-import axios from "axios";
+import axios from "../utils/axios";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     axios
-      .get("https://snaphunt-demo-backend.herokuapp.com/articles")
+      .get("/articles")
       .then(response => {
         this.setState({
           articleArray: response.data
