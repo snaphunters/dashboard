@@ -25,19 +25,21 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "cypress"
-  ],
+  "plugins": ["react", "cypress"],
   "rules": {
     "react/prop-types": 0,
-    "no-unused-vars": [
-      "error"
-    ],
+    "no-unused-vars": ["error"],
     "cypress/no-assigning-return-values": "error",
     "cypress/no-unnecessary-waiting": "error",
     "cypress/assertion-before-screenshot": "warn",
-    "cypress/no-force": "warn",
-    "jest/expect-expect": 0
-  }
+    "cypress/no-force": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["*.spec.js"],
+      "rules": {
+        "jest/expect-expect": 0
+      }
+    }
+  ]
 }
