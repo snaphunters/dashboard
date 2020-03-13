@@ -90,12 +90,21 @@ describe("Editor.js", () => {
     expect(modalBox).not.toBeInTheDocument();
   });
 
-  test("should render Error message when axios fail to accept empty article title", () => {
+  test("should render Error message when article title is empty", () => {
     const { getByText, getByLabelText } = render(<Editor />);
     const saveButton = getByLabelText("Save Button");
     fireEvent.click(saveButton);
     const modalBox = getByText("Title cannot be empty.");
     expect(modalBox).toBeInTheDocument();
+  });
+
+  test("should render Error message when topic title is filled but subtopic title is not", async () => {
+    const { getByText, getByLabelText } = render(<Editor />);
+    const topicTitleInputBox = getByLabelText("Topic Title");
+    fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
+    const saveButton = getByLabelText("Save Button");
+    fireEvent.click(saveButton);
+    wait(() => expect(getByText("Title cannot be empty.")).toBeInTheDocument());
   });
 
   test("Error modal box should close when clicked", () => {

@@ -58,7 +58,11 @@ class Editor extends React.Component {
         isSaved: true,
         isPublished: false
       };
-      if (this.state.topicAndSubtopicArray[0].title.trim().length === 0) {
+      if (
+        this.state.topicAndSubtopicArray.filter(
+          element => element.title.trim().length === 0
+        ).length !== 0
+      ) {
         this.setState({
           modalState: { noTitleError: true }
         });
