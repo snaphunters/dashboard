@@ -36,6 +36,7 @@ describe("RichTextMediaBlock.js", () => {
   test("<RichTextMediaBlock> should render", () => {
     const { getByLabelText } = render(
       <RichTextMediaBlock
+        isEditable={true}
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
         blockArray={blockArray}
@@ -48,6 +49,7 @@ describe("RichTextMediaBlock.js", () => {
   test("<CKEditorContainer> should render", () => {
     const { getByLabelText } = render(
       <RichTextMediaBlock
+        isEditable={true}
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
         blockArray={blockArray}
@@ -60,6 +62,7 @@ describe("RichTextMediaBlock.js", () => {
     const testBlockArray = ["a"];
     const { getByLabelText } = render(
       <RichTextMediaBlock
+        isEditable={true}
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
         blockArray={testBlockArray}
@@ -77,6 +80,7 @@ describe("RichTextMediaBlock.js", () => {
     const expectedBlockArray = ["a", "", "c"];
     const { getByLabelText } = render(
       <RichTextMediaBlock
+        isEditable={true}
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
         blockArray={testBlockArray}
@@ -94,6 +98,7 @@ describe("RichTextMediaBlock.js", () => {
     const testBlockArray = ["first block text"];
     const { queryByLabelText } = render(
       <RichTextMediaBlock
+        isEditable={true}
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={mockUpdateArticleState}
         blockArray={testBlockArray}
