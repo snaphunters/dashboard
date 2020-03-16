@@ -5,6 +5,7 @@ import Editor from "@enwee/ckeditor5-build-balloon-block";
 import ckeditor5Config from "../utils/ckeditor5config";
 
 const RichTextMediaBlock = ({
+  isEditable,
   topicAndSubtopicArray,
   updateArticleState,
   blockArray,
@@ -26,6 +27,7 @@ const RichTextMediaBlock = ({
   };
 
   return blockArray.map((CKString, blockArrayIndex) => {
+    const firstElement = blockArrayIndex === 0;
     return (
       <Container key={blockArrayIndex}>
         <Divider hidden />
@@ -37,20 +39,25 @@ const RichTextMediaBlock = ({
               blockChange(editor.getData(), blockArrayIndex);
             }}
             config={ckeditor5Config}
+            disabled={!isEditable}
           />
         </Segment>
 
-        <Button
-          icon="plus circle"
-          aria-label={`add topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
-          onClick={() => addBlock(blockArrayIndex)}
-        />
-        {Boolean(blockArrayIndex) && (
-          <Button
-            icon="trash"
-            aria-label={`delete topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
-            onClick={() => deleteBlock(blockArrayIndex)}
-          />
+        {isEditable && (
+          <Container>
+            <Button
+              icon="plus circle"
+              aria-label={`add topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
+              onClick={() => addBlock(blockArrayIndex)}
+            />
+            {!firstElement && (
+              <Button
+                icon="trash"
+                aria-label={`delete topicSubtopic ${topicSubtopicIndex} block button ${blockArrayIndex}`}
+                onClick={() => deleteBlock(blockArrayIndex)}
+              />
+            )}
+          </Container>
         )}
       </Container>
     );
