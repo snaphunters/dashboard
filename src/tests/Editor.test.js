@@ -155,4 +155,61 @@ describe("Editor.js", () => {
     fireEvent.click(returnToDashBtn);
     expect(returnToDashboard).toHaveBeenCalled();
   });
+  test("Edit and Preview <Button> should render", () => {
+    const { getByLabelText } = render(<Editor />);
+    const editBtn = getByLabelText("Edit Button");
+    const previewBtn = getByLabelText("Preview Button");
+    expect(editBtn).toBeInTheDocument();
+    expect(previewBtn).toBeInTheDocument();
+  });
+  test("Click Preview and all add/delete buttons should not render", () => {
+    const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+      <Editor />
+    );
+    const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
+    const previewBtn = getByLabelText("Preview Button");
+    fireEvent.click(addBlockBtn);
+    fireEvent.click(previewBtn);
+    const allAddBlockBtn = queryAllByLabelText(
+      /add topicSubtopic \d block button \d/
+    );
+    const allAddSubtopicBtn = queryAllByLabelText(
+      /Add subtopic container button \d/
+    );
+    const deleteBlockBtn = queryByLabelText(
+      "delete topicSubtopic 0 block button 1"
+    );
+    const deleteSubtopicBtn = queryByLabelText(
+      "Delete subtopic container button 1"
+    );
+    expect(allAddBlockBtn).toEqual([]);
+    expect(allAddSubtopicBtn).toEqual([]);
+    expect(deleteBlockBtn).toBe(null);
+    expect(deleteSubtopicBtn).toBe(null);
+  });
+  test("Click Preview then Edit and all add/delete buttons should render", () => {
+    const { getByLabelText, getAllByLabelText } = render(<Editor />);
+    const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
+    const editBtn = getByLabelText("Edit Button");
+    const previewBtn = getByLabelText("Preview Button");
+    fireEvent.click(addBlockBtn);
+    fireEvent.click(previewBtn);
+    fireEvent.click(editBtn);
+    const allAddBlockBtn = getAllByLabelText(
+      /add topicSubtopic \d block button \d/
+    );
+    const allAddSubtopicBtn = getAllByLabelText(
+      /Add subtopic container button \d/
+    );
+    const deleteBlockBtn = getByLabelText(
+      "delete topicSubtopic 0 block button 1"
+    );
+    const deleteSubtopicBtn = getByLabelText(
+      "Delete subtopic container button 1"
+    );
+    expect(allAddBlockBtn.length).toBe(3);
+    expect(allAddSubtopicBtn.length).toBe(2);
+    expect(deleteBlockBtn).toBeInTheDocument();
+    expect(deleteSubtopicBtn).toBeInTheDocument();
+  });
 });
