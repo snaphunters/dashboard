@@ -57,7 +57,8 @@ class Editor extends React.Component {
       const articleDetails = {
         isPublished: false,
         title: this.state.topicAndSubtopicArray[0].title,
-        topicAndSubtopicArray: this.state.topicAndSubtopicArray
+        topicAndSubtopicArray: this.state.topicAndSubtopicArray,
+        id: uuidv4()
       };
       const updatedEditorState = {
         isSaved: true,
