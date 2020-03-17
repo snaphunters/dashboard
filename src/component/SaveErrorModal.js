@@ -6,7 +6,10 @@ const ErrorModalDuplicateTitle = ({ showDuplicateTitleError, closeError }) => {
     <Modal open={showDuplicateTitleError}>
       <Header content="Error: Saving existing article" />
       <Modal.Content>
-        <h3>Your article might have the same title as an existing article.</h3>
+        <h3>
+          Topic title cannot be a duplicate of existing titles. Please change
+          your title.
+        </h3>
       </Modal.Content>
       <Modal.Actions>
         <Button
