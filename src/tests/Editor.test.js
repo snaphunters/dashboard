@@ -137,7 +137,7 @@ describe("Editor.js", () => {
     wait(() =>
       expect(
         getByText(
-          "Your article might have the same title as an existing article."
+          "Topic title cannot be a duplicate of existing titles. Please change your title."
         )
       ).toBeInTheDocument()
     );
