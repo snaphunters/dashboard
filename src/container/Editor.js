@@ -76,11 +76,18 @@ class Editor extends React.Component {
     });
   };
 
+  trimTitle = title => {
+    return title
+      .split(" ")
+      .filter(word => word)
+      .join(" ");
+  };
+
   saveDraft = async () => {
     try {
       const articleDetails = {
         isPublished: false,
-        title: this.state.topicAndSubtopicArray[0].title,
+        title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
         id: uuidv4(),
         category: this.state.categoryState.category
