@@ -3,6 +3,7 @@ import { Container, Divider } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
 import SavedModal from "../component/SavedModal";
+import CategoryMenu from "../component/CategoryMenu";
 import {
   ErrorModalDuplicateTitle,
   ErrorModalNoTitle
@@ -16,6 +17,7 @@ class Editor extends React.Component {
       isEditable: true,
       modalState: { noTitleError: false, duplicateTitleError: false },
       editorState: { isSaved: false, isPublished: false },
+      categoryState: { categoryArray: [], category: "" },
       topicAndSubtopicArray: [
         {
           containerId: uuidv4(),
@@ -30,6 +32,28 @@ class Editor extends React.Component {
       ]
     };
   }
+
+  componentDidMount() {
+    this.getCategories();
+  }
+
+  getCategories() {
+    axios
+      .get("/categories")
+      .then(response => {
+        const categoryState = { ...this.state.categoryState };
+        categoryState.categoryArray = response.data;
+        this.setState({ categoryState });
+      })
+      .catch(error => {
+        return error;
+      });
+  }
+  updateCategory = newCategory => {
+    const categoryState = { ...this.state.categoryState };
+    categoryState.category = newCategory;
+    this.setState({ categoryState });
+  };
 
   toggleEditable = bool => {
     this.setState({ isEditable: bool });
@@ -58,7 +82,8 @@ class Editor extends React.Component {
         isPublished: false,
         title: this.state.topicAndSubtopicArray[0].title,
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
-        id: uuidv4()
+        id: uuidv4(),
+        category: this.state.categoryState.category
       };
       const updatedEditorState = {
         isSaved: true,
@@ -97,6 +122,11 @@ class Editor extends React.Component {
           returnToDash={this.props.returnToDashboard}
         />
         <Divider hidden section />
+        <CategoryMenu
+          categoryArray={this.state.categoryState.categoryArray}
+          category={this.state.categoryState.category}
+          updateCategory={this.updateCategory}
+        />
         <TopicAndSubtopic
           isEditable={this.state.isEditable}
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}

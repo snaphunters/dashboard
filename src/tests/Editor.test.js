@@ -20,22 +20,26 @@ describe("Editor.js", () => {
     const EditorComponent = getByLabelText("Editor");
     expect(EditorComponent).toBeInTheDocument();
   });
+
   test("Topic Title <Input> Box should render", () => {
     const { getByLabelText } = render(<Editor />);
     const TitleComponent = getByLabelText("Topic Title");
     expect(TitleComponent).toBeInTheDocument();
   });
+
   test("Topic Title <Input> Box is rendered with no text when creating new article", () => {
     const { getByLabelText } = render(<Editor />);
     const TitleComponent = getByLabelText("Topic Title");
     expect(TitleComponent).toBeInTheDocument();
     expect(TitleComponent.value).toEqual("");
   });
+
   test("Sub-Topic Title <Input> Box should render", () => {
     const { getByLabelText } = render(<Editor />);
     const TitleComponent = getByLabelText("Sub-Topic Title");
     expect(TitleComponent).toBeInTheDocument();
   });
+
   test("Sub-Topic Title <Input> Box is rendered with no text when creating new article", () => {
     const { getByLabelText } = render(<Editor />);
     const TitleComponent = getByLabelText("Sub-Topic Title");
@@ -52,6 +56,7 @@ describe("Editor.js", () => {
     const TopicTitleText = getByDisplayValue("snapi topic title");
     expect(TopicTitleText).toBeInTheDocument();
   });
+
   test("Sub-Topic Title <Input> Box shows user typed value", () => {
     const { getByLabelText, getByDisplayValue } = render(<Editor />);
     const TitleComponent = getByLabelText("Sub-Topic Title");
@@ -134,6 +139,7 @@ describe("Editor.js", () => {
       ).toBeInTheDocument()
     );
   });
+
   test("Return to Dashboard <Button> should render", () => {
     const { getByLabelText } = render(<Editor />);
     const returnToDashContainer = getByLabelText("return to dashboard");
@@ -155,6 +161,7 @@ describe("Editor.js", () => {
     fireEvent.click(returnToDashBtn);
     expect(returnToDashboard).toHaveBeenCalled();
   });
+
   test("Edit and Preview <Button> should render", () => {
     const { getByLabelText } = render(<Editor />);
     const editBtn = getByLabelText("Edit Button");
@@ -162,6 +169,7 @@ describe("Editor.js", () => {
     expect(editBtn).toBeInTheDocument();
     expect(previewBtn).toBeInTheDocument();
   });
+
   test("Click Preview and all add/delete buttons should not render", () => {
     const { getByLabelText, queryAllByLabelText } = render(<Editor />);
     const regex = new RegExp(/^(add|delete).*button/, "i");
@@ -172,6 +180,7 @@ describe("Editor.js", () => {
     const allAddDeleteBtn = queryAllByLabelText(regex);
     expect(allAddDeleteBtn).toEqual([]);
   });
+
   test("Click Preview then Edit and all add/delete buttons should render", () => {
     const { getByLabelText, getAllByLabelText } = render(<Editor />);
     const regex = new RegExp(/^(add|delete).*button/, "i");
@@ -183,5 +192,32 @@ describe("Editor.js", () => {
     fireEvent.click(editBtn);
     const allAddDeleteBtn = getAllByLabelText(regex);
     expect(allAddDeleteBtn.length).toBe(7);
+  });
+
+  test("Category Dropdown Menu is rendered with list of Categories", async () => {
+    const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+    mockAxios.onGet("/categories").reply(200, categories);
+
+    const { getByLabelText, queryAllByLabelText } = render(<Editor />);
+    expect(getByLabelText("CategoryDropDown")).toBeInTheDocument();
+
+    await wait(() => {
+      expect(queryAllByLabelText(/Category Option/).length).toBe(4);
+    });
+  });
+
+  test("Selecting a category should display the correct category", async () => {
+    const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+    mockAxios.onGet("/categories").reply(200, categories);
+
+    const { getByLabelText } = render(<Editor />);
+
+    const categoryDropdown = getByLabelText("CategoryDropDown");
+    expect(categoryDropdown).toBeInTheDocument();
+
+    await wait(() => {
+      fireEvent.change(categoryDropdown, { target: { value: "lemonade" } });
+      expect(categoryDropdown.value).toBe("lemonade");
+    });
   });
 });
