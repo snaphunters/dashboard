@@ -4,6 +4,7 @@ const HeaderBar = ({
   isEditable,
   toggleEditable,
   saveDraft,
+  publishTopic,
   addSubtopicContainer,
   topicSubtopicIndex,
   returnToDash
@@ -17,6 +18,11 @@ const HeaderBar = ({
       borderless
       size="large"
     >
+      <Menu.Item position="left" aria-label="return to dashboard">
+        <Button onClick={returnToDash} aria-label="Return to Dashboard">
+          Back to Dashboard
+        </Button>
+      </Menu.Item>
       <Menu.Item>
         <Button
           content="Edit"
@@ -40,9 +46,13 @@ const HeaderBar = ({
           Save as Draft
         </Button>
       </Menu.Item>
-      <Menu.Item aria-label="return to dashboard">
-        <Button onClick={returnToDash} aria-label="Return to Dashboard">
-          Back to Dashboard
+      <Menu.Item>
+        <Button
+          onClick={publishTopic}
+          aria-label="Publish Button"
+          color="yellow"
+        >
+          Publish
         </Button>
       </Menu.Item>
     </Menu>
