@@ -62,7 +62,18 @@ describe("Dashboard.js", () => {
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
     await wait(() => getByLabelText("article-title"));
     const { getByText } = within(getByLabelText("article-title"));
-    expect(getByText(`1. ${mockSingleArticle[0].title}`)).toBeInTheDocument();
+    expect(getByText(`${mockSingleArticle[0].title}`)).toBeInTheDocument();
+  });
+
+  test("Should render correct article when draft/published article is accessed", async () => {
+    const editArticle = jest.fn();
+    const { getByLabelText } = render(<Dashboard editArticle={editArticle} />);
+    mockAxios.onGet("/articles").reply(200, mockSingleArticle);
+    await wait(() => getByLabelText("article-title"));
+    const { getByText } = within(getByLabelText("article-title"));
+    const articleTitle = getByText("This is a title");
+    fireEvent.click(articleTitle);
+    expect(editArticle).toHaveBeenCalled();
   });
 
   test("Should throw error if URL is invalid", async () => {

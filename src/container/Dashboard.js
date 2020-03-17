@@ -8,7 +8,6 @@ import {
   Label
 } from "semantic-ui-react";
 import axios from "../utils/axios";
-
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -16,10 +15,9 @@ class Dashboard extends React.Component {
       articleArray: []
     };
   }
-
   componentDidMount() {
     axios
-      .get("/articles")
+      .get("articles")
       .then(response => {
         this.setState({
           articleArray: response.data
@@ -52,8 +50,8 @@ class Dashboard extends React.Component {
               return (
                 <Segment aria-label="article-title" key={item._id}>
                   <Menu.Item horizontal="true">
-                    <Header as="h2">
-                      {idx + 1}. {item.title}
+                    <Header as="h2" onClick={this.props.editArticle}>
+                      {item.title}
                     </Header>
                     <Label
                       aria-label="article-publish-status"
@@ -71,5 +69,4 @@ class Dashboard extends React.Component {
     );
   };
 }
-
 export default Dashboard;

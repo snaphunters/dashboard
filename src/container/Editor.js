@@ -29,13 +29,11 @@ class Editor extends React.Component {
       ]
     };
   }
-
   updateArticleState = newTopicAndSubtopicArray => {
     this.setState({
       topicAndSubtopicArray: newTopicAndSubtopicArray
     });
   };
-
   closeError = () => {
     this.setState({
       modalState: { duplicateTitleError: false, noTitleError: false }
@@ -46,7 +44,6 @@ class Editor extends React.Component {
       editorState: { isSaved: false }
     });
   };
-
   saveDraft = async () => {
     try {
       const articleDetails = {
@@ -80,9 +77,34 @@ class Editor extends React.Component {
     }
   };
 
+  componentDidMount() {
+    if (this.props.articleTitle === "") {
+      this.setState({
+        topicAndSubtopicArray: [
+          {
+            containerId: uuidv4(),
+            title: "",
+            blockArray: [""]
+          },
+          {
+            containerId: uuidv4(),
+            title: "",
+            blockArray: [""]
+          }
+        ]
+      });
+    } else
+      axios.get("articles/" + this.props.articleTitle).then(response => {
+        this.setState({
+          topicAndSubtopicArray: response.data[0].topicAndSubtopicArray
+        });
+      });
+  }
+
   render = () => {
     return (
       <Container aria-label="Editor">
+        <h1>{this.props.articleTitle}</h1>
         <HeaderBar
           saveDraft={this.saveDraft}
           addSubtopicContainer={this.addSubtopicContainer}
@@ -109,5 +131,4 @@ class Editor extends React.Component {
     );
   };
 }
-
 export default Editor;

@@ -28,5 +28,4 @@ const HeaderBar = ({
     </Menu>
   </>
 );
-
 export default HeaderBar;

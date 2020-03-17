@@ -1,5 +1,11 @@
 import React from "react";
-import { render, fireEvent, wait, within } from "@testing-library/react";
+import {
+  render,
+  fireEvent,
+  wait,
+  within,
+  handleResponse
+} from "@testing-library/react";
 import Editor from "../container/Editor";
 import axios from "../utils/axios";
 import MockAdapter from "axios-mock-adapter";
@@ -154,5 +160,17 @@ describe("Editor.js", () => {
     );
     fireEvent.click(returnToDashBtn);
     expect(returnToDashboard).toHaveBeenCalled();
+  });
+
+  test("should render Error if saving draft fails", async () => {
+    mockAxios.onPost("/articles").reply(422);
+    const { getByLabelText } = render(<Editor />);
+    const topicTitleInputBox = getByLabelText("Topic Title");
+    const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
+    fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
+    fireEvent.change(subtopicTitleInputBox, { target: { value: "Snapi" } });
+    const saveButton = getByLabelText("Save Button");
+    fireEvent.click(saveButton);
+    expect(fireEvent.click(saveButton)).toThrowError("");
   });
 });
