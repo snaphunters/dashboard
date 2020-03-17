@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  render,
-  fireEvent,
-  wait,
-  within,
-  handleResponse
-} from "@testing-library/react";
+import { render, fireEvent, wait, within } from "@testing-library/react";
 import Editor from "../container/Editor";
 import axios from "../utils/axios";
 import MockAdapter from "axios-mock-adapter";
@@ -161,16 +155,33 @@ describe("Editor.js", () => {
     fireEvent.click(returnToDashBtn);
     expect(returnToDashboard).toHaveBeenCalled();
   });
-
-  test("should render Error if saving draft fails", async () => {
-    mockAxios.onPost("/articles").reply(422);
+  test("Edit and Preview <Button> should render", () => {
     const { getByLabelText } = render(<Editor />);
-    const topicTitleInputBox = getByLabelText("Topic Title");
-    const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
-    fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
-    fireEvent.change(subtopicTitleInputBox, { target: { value: "Snapi" } });
-    const saveButton = getByLabelText("Save Button");
-    fireEvent.click(saveButton);
-    expect(fireEvent.click(saveButton)).toThrowError("");
+    const editBtn = getByLabelText("Edit Button");
+    const previewBtn = getByLabelText("Preview Button");
+    expect(editBtn).toBeInTheDocument();
+    expect(previewBtn).toBeInTheDocument();
+  });
+  test("Click Preview and all add/delete buttons should not render", () => {
+    const { getByLabelText, queryAllByLabelText } = render(<Editor />);
+    const regex = new RegExp(/^(add|delete).*button/, "i");
+    const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
+    const previewBtn = getByLabelText("Preview Button");
+    fireEvent.click(addBlockBtn); //to make the block delete button render
+    fireEvent.click(previewBtn);
+    const allAddDeleteBtn = queryAllByLabelText(regex);
+    expect(allAddDeleteBtn).toEqual([]);
+  });
+  test("Click Preview then Edit and all add/delete buttons should render", () => {
+    const { getByLabelText, getAllByLabelText } = render(<Editor />);
+    const regex = new RegExp(/^(add|delete).*button/, "i");
+    const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
+    const editBtn = getByLabelText("Edit Button");
+    const previewBtn = getByLabelText("Preview Button");
+    fireEvent.click(addBlockBtn); //to make the block delete button render
+    fireEvent.click(previewBtn);
+    fireEvent.click(editBtn);
+    const allAddDeleteBtn = getAllByLabelText(regex);
+    expect(allAddDeleteBtn.length).toBe(7);
   });
 });

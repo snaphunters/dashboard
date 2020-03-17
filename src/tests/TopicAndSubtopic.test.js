@@ -37,6 +37,7 @@ describe("TopicAndSubtopic.test.js", () => {
   test("when add subtopic button is clicked, new subtopic container is added.", () => {
     const { getByLabelText } = render(
       <TopicAndSubtopic
+        isEditable={true}
         topicAndSubtopicArray={topicAndSubtopicArray}
         updateArticleState={updateArticleState}
       />

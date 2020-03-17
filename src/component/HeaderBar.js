@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Menu } from "semantic-ui-react";
 const HeaderBar = ({
+  isEditable,
+  toggleEditable,
   saveDraft,
   addSubtopicContainer,
   topicSubtopicIndex,
@@ -15,6 +17,24 @@ const HeaderBar = ({
       borderless
       size="large"
     >
+      <Menu.Item>
+        <Button
+          content="Edit"
+          toggle
+          active={isEditable}
+          onClick={() => toggleEditable(true)}
+          aria-label="Edit Button"
+        />
+      </Menu.Item>
+      <Menu.Item>
+        <Button
+          content="Preview"
+          toggle
+          active={!isEditable}
+          onClick={() => toggleEditable(false)}
+          aria-label="Preview Button"
+        />
+      </Menu.Item>
       <Menu.Item position="right">
         <Button onClick={saveDraft} aria-label="Save Button">
           Save as Draft

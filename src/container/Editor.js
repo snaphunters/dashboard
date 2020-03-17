@@ -13,6 +13,7 @@ class Editor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isEditable: true,
       modalState: { noTitleError: false, duplicateTitleError: false },
       editorState: { isSaved: false, isPublished: false },
       topicAndSubtopicArray: [
@@ -29,6 +30,14 @@ class Editor extends React.Component {
       ]
     };
   }
+<<<<<<< HEAD
+=======
+
+  toggleEditable = bool => {
+    this.setState({ isEditable: bool });
+  };
+
+>>>>>>> 56c1e8e4dcf64e48d57e60414714ed69a5c6f0cc
   updateArticleState = newTopicAndSubtopicArray => {
     this.setState({
       topicAndSubtopicArray: newTopicAndSubtopicArray
@@ -106,15 +115,19 @@ class Editor extends React.Component {
       <Container aria-label="Editor">
         <h1>{this.props.articleTitle}</h1>
         <HeaderBar
+          isEditable={this.state.isEditable}
+          toggleEditable={this.toggleEditable}
           saveDraft={this.saveDraft}
           addSubtopicContainer={this.addSubtopicContainer}
           returnToDash={this.props.returnToDashboard}
         />
         <Divider hidden section />
         <TopicAndSubtopic
+          isEditable={this.state.isEditable}
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}
           updateArticleState={this.updateArticleState}
         />
+        <Divider hidden section />
         <SavedModal
           isSaved={this.state.editorState.isSaved}
           closeSave={this.closeSaveModal}
