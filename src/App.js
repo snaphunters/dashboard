@@ -31,7 +31,6 @@ class App extends React.Component {
   render = () => {
     return (
       <Container>
-        <h1>Article Title: {this.state.articleTitle}</h1>
         {this.state.showEditor ? (
           <Editor
             articleId={this.state.articleId}

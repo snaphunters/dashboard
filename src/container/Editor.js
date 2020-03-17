@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Divider } from "semantic-ui-react";
+import { Container, Divider, Label, Loader, Segment } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
 import SavedModal from "../component/SavedModal";
@@ -16,6 +16,7 @@ class Editor extends React.Component {
       isEditable: true,
       modalState: { noTitleError: false, duplicateTitleError: false },
       editorState: { isSaved: false, isPublished: false },
+      articleUpdatedAt: "",
       topicAndSubtopicArray: [
         {
           containerId: uuidv4(),
@@ -30,14 +31,11 @@ class Editor extends React.Component {
       ]
     };
   }
-<<<<<<< HEAD
-=======
 
   toggleEditable = bool => {
     this.setState({ isEditable: bool });
   };
 
->>>>>>> 56c1e8e4dcf64e48d57e60414714ed69a5c6f0cc
   updateArticleState = newTopicAndSubtopicArray => {
     this.setState({
       topicAndSubtopicArray: newTopicAndSubtopicArray
@@ -88,32 +86,33 @@ class Editor extends React.Component {
 
   componentDidMount() {
     if (this.props.articleTitle === "") {
-      this.setState({
-        topicAndSubtopicArray: [
-          {
-            containerId: uuidv4(),
-            title: "",
-            blockArray: [""]
-          },
-          {
-            containerId: uuidv4(),
-            title: "",
-            blockArray: [""]
-          }
-        ]
-      });
+      this.updateArticleState([
+        {
+          containerId: uuidv4(),
+          title: "",
+          blockArray: [""]
+        },
+        {
+          containerId: uuidv4(),
+          title: "",
+          blockArray: [""]
+        }
+      ]);
     } else
-      axios.get("articles/" + this.props.articleTitle).then(response => {
-        this.setState({
-          topicAndSubtopicArray: response.data[0].topicAndSubtopicArray
-        });
-      });
+      axios
+        .get(`articles/${this.props.articleTitle}`)
+        .then(response => {
+          this.updateArticleState(response.data[0].topicAndSubtopicArray);
+          this.setState({
+            articleUpdatedAt: response.data[0].updatedAt
+          });
+        })
+        .catch(error => console.log(error));
   }
 
   render = () => {
     return (
       <Container aria-label="Editor">
-        <h1>{this.props.articleTitle}</h1>
         <HeaderBar
           isEditable={this.state.isEditable}
           toggleEditable={this.toggleEditable}
@@ -122,6 +121,24 @@ class Editor extends React.Component {
           returnToDash={this.props.returnToDashboard}
         />
         <Divider hidden section />
+        <Segment basic>
+          {this.props.articleTitle && (
+            <Label
+              attached="top left"
+              color="teal"
+              aria-label="Last Updated Label"
+            >
+              Last Updated:{" "}
+              <Label.Detail>
+                {!this.state.articleUpdatedAt ? (
+                  <Loader size="mini" active inline />
+                ) : (
+                  new Date(this.state.articleUpdatedAt).toString()
+                )}
+              </Label.Detail>
+            </Label>
+          )}
+        </Segment>
         <TopicAndSubtopic
           isEditable={this.state.isEditable}
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}
