@@ -2,10 +2,15 @@ import React from "react";
 import { Container, Divider, Label, Loader, Segment } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
+<<<<<<< HEAD
 import {
   SavedModal,
   PublishModal
 } from "../component/SaveDraftAndPublishModal";
+=======
+import SavedModal from "../component/SavedModal";
+import ConfirmDeleteModal from "../component/ConfirmDeleteArticleModal";
+>>>>>>> [Nev/JC] #13 Add state and functions to handle delete article functionalities
 import CategoryMenu from "../component/CategoryMenu";
 import {
   ErrorModalDuplicateTitle,
@@ -20,6 +25,7 @@ class Editor extends React.Component {
       isEditable: true,
       modalState: { noTitleError: false, duplicateTitleError: false },
       editorState: { isSaved: false, isPublished: false },
+      deleteState: { deleteModalOpen: false, confirmDelete: false },
       articleUpdatedAt: "",
       categoryState: { categoryArray: [], category: "Uncategorized" },
       topicAndSubtopicArray: [
@@ -69,15 +75,28 @@ class Editor extends React.Component {
       modalState: { duplicateTitleError: false, noTitleError: false }
     });
   };
+
   closeSaveModal = () => {
     this.setState({
       editorState: { isSaved: false }
     });
   };
 
+<<<<<<< HEAD
   closePublishModal = () => {
     this.setState({
       editorState: { isPublished: false }
+=======
+  openDeleteModal = () => {
+    this.setState({
+      deleteState: { deleteModalOpen: true }
+    });
+  };
+
+  closeDeleteModal = () => {
+    this.setState({
+      deleteState: { deleteModalOpen: false }
+>>>>>>> [Nev/JC] #13 Add state and functions to handle delete article functionalities
     });
   };
 
@@ -86,6 +105,21 @@ class Editor extends React.Component {
       .split(" ")
       .filter(word => word)
       .join(" ");
+  };
+
+  getTitle = () => {
+    return this.state.topicAndSubtopicArray[0].title;
+  };
+
+  confirmDelete = async () => {
+    const articleToDelete = this.state.topicAndSubtopicArray[0].title;
+    await axios.delete(`/articles/${articleToDelete}`);
+    this.setState({
+      deleteState: {
+        confirmDelete: true
+      }
+    });
+    window.location.reload(true);
   };
 
   saveDraft = async () => {
@@ -209,6 +243,8 @@ class Editor extends React.Component {
           publishTopic={this.publishTopic}
           addSubtopicContainer={this.addSubtopicContainer}
           returnToDash={this.props.returnToDashboard}
+          getTitle={this.getTitle}
+          openDeleteModal={this.openDeleteModal}
         />
         <Divider hidden section />
         <Segment basic>
@@ -244,9 +280,16 @@ class Editor extends React.Component {
           isSaved={this.state.editorState.isSaved}
           closeSave={this.closeSaveModal}
         />
+<<<<<<< HEAD
         <PublishModal
           isPublished={this.state.editorState.isPublished}
           closePublish={this.closePublishModal}
+=======
+        <ConfirmDeleteModal
+          openDeleteModal={this.state.deleteState.deleteModalOpen}
+          closeDeleteModal={this.closeDeleteModal}
+          confirmDelete={this.confirmDelete}
+>>>>>>> [Nev/JC] #13 Add state and functions to handle delete article functionalities
         />
         <ErrorModalDuplicateTitle
           showDuplicateTitleError={this.state.modalState.duplicateTitleError}
