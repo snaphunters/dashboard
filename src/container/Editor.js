@@ -17,7 +17,7 @@ class Editor extends React.Component {
       isEditable: true,
       modalState: { noTitleError: false, duplicateTitleError: false },
       editorState: { isSaved: false, isPublished: false },
-      categoryState: { categoryArray: [], category: "" },
+      categoryState: { categoryArray: [], category: "Uncategorized" },
       topicAndSubtopicArray: [
         {
           containerId: uuidv4(),
