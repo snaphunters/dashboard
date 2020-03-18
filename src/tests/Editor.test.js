@@ -145,7 +145,7 @@ describe("Editor.js", () => {
         expect(modalBox).not.toBeInTheDocument();
       });
 
-      test("should render Error message when axios fail to accept duplicate article title", async () => {
+      test("should render Error message when axios fail to accept duplicate article title for save draft functionality", async () => {
         mockAxios.onPost("/articles").reply(422);
         const { getByText, getByLabelText } = render(
           <Editor articleTitle={""} />
@@ -170,157 +170,174 @@ describe("Editor.js", () => {
   });
 
   describe("Publish functionality", () => {
-    describe("render savedModal", () => {
-      describe("Render Error Modals", () => {
-        test("should render Error message when article title is empty", () => {
-          const { getByText, getByLabelText } = render(
-            <Editor articleTitle={""} />
-          );
-          const publishButton = getByLabelText("Publish Button");
-          fireEvent.click(publishButton);
-          const modalBox = getByText("Title cannot be empty.");
-          expect(modalBox).toBeInTheDocument();
+    describe("render PublishModal", () => {
+      test("should render 'Successfully published!' after axios is successful", async () => {
+        const { getByText, getByLabelText } = render(<Editor />);
+        mockAxios.onPost("/publish").reply(201);
+        mockAxios.onPost("/articles").reply(201);
+        const topicTitleInputBox = getByLabelText("Topic Title");
+        const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
+        fireEvent.change(topicTitleInputBox, { target: { value: "Snapi3" } });
+        fireEvent.change(subtopicTitleInputBox, {
+          target: { value: "Snapi4" }
         });
-
-        test("should render Error message when topic title is filled but subtopic title is not", async () => {
-          const { getByText, getByLabelText } = render(
-            <Editor articleTitle={""} />
-          );
-          const topicTitleInputBox = getByLabelText("Topic Title");
-          fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
-          const publishButton = getByLabelText("Publish Button");
-          fireEvent.click(publishButton);
-          wait(() =>
-            expect(getByText("Title cannot be empty.")).toBeInTheDocument()
-          );
-        });
-
-        test("Error modal box should close when clicked", () => {
-          const { queryByText, getByLabelText } = render(
-            <Editor articleTitle={""} />
-          );
-          const publishButton = getByLabelText("Publish Button");
-          fireEvent.click(publishButton);
-          const closeErrorButton = getByLabelText("close error message");
-          fireEvent.click(closeErrorButton);
-          const modalBox = queryByText("Title cannot be empty.");
-          expect(modalBox).not.toBeInTheDocument();
-        });
-
-        test("should render Error message when axios fail to accept duplicate article title", async () => {
-          mockAxios.onPost("/articles").reply(422);
-          const { getByText, getByLabelText } = render(
-            <Editor articleTitle={""} />
-          );
-          const topicTitleInputBox = getByLabelText("Topic Title");
-          const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
-          fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
-          fireEvent.change(subtopicTitleInputBox, {
-            target: { value: "Snapi2" }
-          });
-          const publishButton = getByLabelText("Publish Button");
-          fireEvent.click(publishButton);
-          wait(() =>
-            expect(
-              getByText(
-                "Topic title cannot be a duplicate of existing titles. Please change your title."
-              )
-            ).toBeInTheDocument()
-          );
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        await wait(() => {
+          expect(getByText("Published")).toBeInTheDocument();
         });
       });
-    });
-    describe("Return to Dashboard", () => {
-      test("Return to Dashboard <Button> should render", () => {
-        const { getByLabelText } = render(<Editor articleTitle={""} />);
-        const returnToDashContainer = getByLabelText("return to dashboard");
-        const returnToDashBtn = within(returnToDashContainer).getByLabelText(
-          "Return to Dashboard"
+      test("Save modal box should close when clicked", async () => {
+        const { queryByText, getByLabelText } = render(<Editor />);
+        mockAxios.onPost("/publish").reply(201);
+        mockAxios.onPost("/articles").reply(201);
+        const topicTitleInputBox = getByLabelText("Topic Title");
+        const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
+        fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
+        fireEvent.change(subtopicTitleInputBox, {
+          target: { value: "Snapi2" }
+        });
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        await wait(() =>
+          fireEvent.click(getByLabelText("close publish message"))
         );
-        expect(returnToDashBtn).toBeInTheDocument();
-      });
-
-      test("Return to Dashboard <Button> should return to dashboard on click", async () => {
-        const returnToDashboard = jest.fn();
-        const { getByLabelText } = render(
-          <Editor returnToDashboard={returnToDashboard} articleTitle={""} />
-        );
-        const returnToDashContainer = getByLabelText("return to dashboard");
-        const returnToDashBtn = within(returnToDashContainer).getByLabelText(
-          "Return to Dashboard"
-        );
-        fireEvent.click(returnToDashBtn);
-        expect(returnToDashboard).toHaveBeenCalled();
+        const modalBox = queryByText("Successfully published!");
+        expect(modalBox).not.toBeInTheDocument();
       });
     });
 
-    describe("Edit and Preview", () => {
-      test("Edit and Preview <Button> should render", () => {
-        const { getByLabelText } = render(<Editor articleTitle={""} />);
-        const editBtn = getByLabelText("Edit Button");
-        const previewBtn = getByLabelText("Preview Button");
-        expect(editBtn).toBeInTheDocument();
-        expect(previewBtn).toBeInTheDocument();
+    describe("Render Error Modals", () => {
+      test("should render Error message when article title is empty", () => {
+        const { getByText, getByLabelText } = render(<Editor />);
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        const modalBox = getByText("Title cannot be empty.");
+        expect(modalBox).toBeInTheDocument();
       });
-      test("Click Preview and all add/delete buttons should not render", () => {
-        const { getByLabelText, queryAllByLabelText } = render(
-          <Editor articleTitle={""} />
+
+      test("should render Error message when topic title is filled but subtopic title is not", async () => {
+        const { getByText, getByLabelText } = render(<Editor />);
+        const topicTitleInputBox = getByLabelText("Topic Title");
+        fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        wait(() =>
+          expect(getByText("Title cannot be empty.")).toBeInTheDocument()
         );
-        const regex = new RegExp(/^(add|delete).*button/, "i");
-        const addBlockBtn = getByLabelText(
-          "add topicSubtopic 0 block button 0"
-        );
-        const previewBtn = getByLabelText("Preview Button");
-        fireEvent.click(addBlockBtn); //to make the block delete button render
-        fireEvent.click(previewBtn);
-        const allAddDeleteBtn = queryAllByLabelText(regex);
-        expect(allAddDeleteBtn).toEqual([]);
       });
-      test("Click Preview then Edit and all add/delete buttons should render", () => {
-        const { getByLabelText, getAllByLabelText } = render(
-          <Editor articleTitle={""} />
+
+      test("Error modal box should close when clicked", () => {
+        const { queryByText, getByLabelText } = render(<Editor />);
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        const closeErrorButton = getByLabelText("close error message");
+        fireEvent.click(closeErrorButton);
+        const modalBox = queryByText("Title cannot be empty.");
+        expect(modalBox).not.toBeInTheDocument();
+      });
+
+      test("should render Error message when axios fail to accept duplicate article title for publish function", async () => {
+        mockAxios.onPost("/publish").reply(422);
+        const { getByText, getByLabelText } = render(<Editor />);
+        const topicTitleInputBox = getByLabelText("Topic Title");
+        const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
+        fireEvent.change(topicTitleInputBox, { target: { value: "Snapi" } });
+        fireEvent.change(subtopicTitleInputBox, {
+          target: { value: "Snapi2" }
+        });
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        wait(() =>
+          expect(
+            getByText(
+              "Topic title cannot be a duplicate of existing titles. Please change your title."
+            )
+          ).toBeInTheDocument()
         );
-        const regex = new RegExp(/^(add|delete).*button/, "i");
-        const addBlockBtn = getByLabelText(
-          "add topicSubtopic 0 block button 0"
-        );
-        const editBtn = getByLabelText("Edit Button");
-        const previewBtn = getByLabelText("Preview Button");
-        fireEvent.click(addBlockBtn); //to make the block delete button render
-        fireEvent.click(previewBtn);
-        fireEvent.click(editBtn);
-        const allAddDeleteBtn = getAllByLabelText(regex);
-        expect(allAddDeleteBtn.length).toBe(7);
       });
     });
-
-    test("Category Dropdown Menu is rendered with list of Categories", async () => {
-      const categories = ["lemonade", "vanilla", "chocolate", "durian"];
-      mockAxios.onGet("/categories").reply(200, categories);
-
-      const { getByLabelText, queryAllByLabelText } = render(
-        <Editor articleTitle={""} />
+  });
+  describe("Return to Dashboard", () => {
+    test("Return to Dashboard <Button> should render", () => {
+      const { getByLabelText } = render(<Editor />);
+      const returnToDashContainer = getByLabelText("return to dashboard");
+      const returnToDashBtn = within(returnToDashContainer).getByLabelText(
+        "Return to Dashboard"
       );
-      expect(getByLabelText("CategoryDropDown")).toBeInTheDocument();
-
-      await wait(() => {
-        expect(queryAllByLabelText(/Category Option/).length).toBe(4);
-      });
+      expect(returnToDashBtn).toBeInTheDocument();
     });
 
-    test("Selecting a category should display the correct category", async () => {
-      const categories = ["lemonade", "vanilla", "chocolate", "durian"];
-      mockAxios.onGet("/categories").reply(200, categories);
+    test("Return to Dashboard <Button> should return to dashboard on click", async () => {
+      const returnToDashboard = jest.fn();
+      const { getByLabelText } = render(
+        <Editor returnToDashboard={returnToDashboard} />
+      );
+      const returnToDashContainer = getByLabelText("return to dashboard");
+      const returnToDashBtn = within(returnToDashContainer).getByLabelText(
+        "Return to Dashboard"
+      );
+      fireEvent.click(returnToDashBtn);
+      expect(returnToDashboard).toHaveBeenCalled();
+    });
+  });
 
-      const { getByLabelText } = render(<Editor articleTitle={""} />);
+  describe("Edit and Preview", () => {
+    test("Edit and Preview <Button> should render", () => {
+      const { getByLabelText } = render(<Editor />);
+      const editBtn = getByLabelText("Edit Button");
+      const previewBtn = getByLabelText("Preview Button");
+      expect(editBtn).toBeInTheDocument();
+      expect(previewBtn).toBeInTheDocument();
+    });
+    test("Click Preview and all add/delete buttons should not render", () => {
+      const { getByLabelText, queryAllByLabelText } = render(<Editor />);
+      const regex = new RegExp(/^(add|delete).*button/, "i");
+      const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
+      const previewBtn = getByLabelText("Preview Button");
+      fireEvent.click(addBlockBtn); //to make the block delete button render
+      fireEvent.click(previewBtn);
+      const allAddDeleteBtn = queryAllByLabelText(regex);
+      expect(allAddDeleteBtn).toEqual([]);
+    });
+    test("Click Preview then Edit and all add/delete buttons should render", () => {
+      const { getByLabelText, getAllByLabelText } = render(<Editor />);
+      const regex = new RegExp(/^(add|delete).*button/, "i");
+      const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
+      const editBtn = getByLabelText("Edit Button");
+      const previewBtn = getByLabelText("Preview Button");
+      fireEvent.click(addBlockBtn); //to make the block delete button render
+      fireEvent.click(previewBtn);
+      fireEvent.click(editBtn);
+      const allAddDeleteBtn = getAllByLabelText(regex);
+      expect(allAddDeleteBtn.length).toBe(7);
+    });
+  });
 
-      const categoryDropdown = getByLabelText("CategoryDropDown");
-      expect(categoryDropdown).toBeInTheDocument();
+  test("Category Dropdown Menu is rendered with list of Categories", async () => {
+    const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+    mockAxios.onGet("/categories").reply(200, categories);
 
-      await wait(() => {
-        fireEvent.change(categoryDropdown, { target: { value: "lemonade" } });
-        expect(categoryDropdown.value).toBe("lemonade");
-      });
+    const { getByLabelText, queryAllByLabelText } = render(<Editor />);
+    expect(getByLabelText("CategoryDropDown")).toBeInTheDocument();
+
+    await wait(() => {
+      expect(queryAllByLabelText(/Category Option/).length).toBe(4);
+    });
+  });
+
+  test("Selecting a category should display the correct category", async () => {
+    const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+    mockAxios.onGet("/categories").reply(200, categories);
+
+    const { getByLabelText } = render(<Editor />);
+
+    const categoryDropdown = getByLabelText("CategoryDropDown");
+    expect(categoryDropdown).toBeInTheDocument();
+
+    await wait(() => {
+      fireEvent.change(categoryDropdown, { target: { value: "lemonade" } });
+      expect(categoryDropdown.value).toBe("lemonade");
     });
   });
 

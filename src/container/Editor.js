@@ -2,7 +2,10 @@ import React from "react";
 import { Container, Divider, Label, Loader, Segment } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
-import SavedModal from "../component/SavedModal";
+import {
+  SavedModal,
+  PublishModal
+} from "../component/SaveDraftAndPublishModal";
 import CategoryMenu from "../component/CategoryMenu";
 import {
   ErrorModalDuplicateTitle,
@@ -72,6 +75,12 @@ class Editor extends React.Component {
     });
   };
 
+  closePublishModal = () => {
+    this.setState({
+      editorState: { isPublished: false }
+    });
+  };
+
   trimTitle = title => {
     return title
       .split(" ")
@@ -88,8 +97,7 @@ class Editor extends React.Component {
         category: this.state.categoryState.category
       };
       const updatedEditorState = {
-        isSaved: true,
-        isPublished: false
+        isSaved: true
       };
       if (
         this.state.topicAndSubtopicArray.filter(
@@ -126,10 +134,10 @@ class Editor extends React.Component {
         isPublished: true,
         title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
-        id: uuidv4()
+        id: uuidv4(),
+        category: this.state.categoryState.category
       };
       const updatedEditorState = {
-        isSaved: true,
         isPublished: true
       };
       if (
@@ -234,6 +242,10 @@ class Editor extends React.Component {
         <SavedModal
           isSaved={this.state.editorState.isSaved}
           closeSave={this.closeSaveModal}
+        />
+        <PublishModal
+          isPublished={this.state.editorState.isPublished}
+          closePublish={this.closePublishModal}
         />
         <ErrorModalDuplicateTitle
           showDuplicateTitleError={this.state.modalState.duplicateTitleError}

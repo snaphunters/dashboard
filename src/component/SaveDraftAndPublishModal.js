@@ -21,4 +21,24 @@ const SavedModal = ({ isSaved, closeSave }) => {
   );
 };
 
-export default SavedModal;
+const PublishModal = ({ isPublished, closePublish }) => {
+  return (
+    <Modal open={isPublished}>
+      <Header content="Published" />
+      <Modal.Content>
+        <p>Successfully published!</p>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button
+          aria-label="close publish message"
+          color="green"
+          onClick={closePublish}
+        >
+          <Icon name="checkmark" /> Ok
+        </Button>
+      </Modal.Actions>
+    </Modal>
+  );
+};
+
+export { SavedModal, PublishModal };
