@@ -118,6 +118,43 @@ class Editor extends React.Component {
     }
   };
 
+  publishTopic = async () => {
+    try {
+      const articleDetails = {
+        isPublished: true,
+        title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
+        topicAndSubtopicArray: this.state.topicAndSubtopicArray,
+        id: uuidv4()
+      };
+      const updatedEditorState = {
+        isSaved: true,
+        isPublished: true
+      };
+      if (
+        this.state.topicAndSubtopicArray.filter(
+          element => element.title.trim().length === 0
+        ).length !== 0
+      ) {
+        this.setState({
+          modalState: { noTitleError: true }
+        });
+      } else {
+        await Promise.all([
+          axios.post("/publish", articleDetails),
+          axios.post("/articles", articleDetails)
+        ]);
+        this.setState({ editorState: updatedEditorState });
+      }
+    } catch (error) {
+      if (error.response.status === 422) {
+        this.setState({
+          modalState: { duplicateTitleError: true }
+        });
+      }
+      return error;
+    }
+  };
+
   render = () => {
     return (
       <Container aria-label="Editor">
@@ -125,6 +162,7 @@ class Editor extends React.Component {
           isEditable={this.state.isEditable}
           toggleEditable={this.toggleEditable}
           saveDraft={this.saveDraft}
+          publishTopic={this.publishTopic}
           addSubtopicContainer={this.addSubtopicContainer}
           returnToDash={this.props.returnToDashboard}
         />
