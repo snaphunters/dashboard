@@ -50,9 +50,16 @@ class Dashboard extends React.Component {
               return (
                 <Segment aria-label="article-title" key={item._id}>
                   <Menu.Item horizontal="true">
-                    <Header as="h2" onClick={this.props.editArticle}>
+                    <Button
+                      basic
+                      active
+                      size="massive"
+                      fluid
+                      onClick={this.props.editArticle}
+                    >
                       {item.title}
-                    </Header>
+                    </Button>
+
                     <Label
                       aria-label="article-publish-status"
                       aria-hidden="false"
