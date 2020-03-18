@@ -51,13 +51,8 @@ const HeaderBar = ({
 
       <Container>
         <Menu.Item position="right">
-          <Button
-            toggle
-            active={isEditable}
-            onClick={openDeleteModal}
-            aria-label="Remove Article"
-          >
-            Delete
+          <Button toggle onClick={openDeleteModal} aria-label="Remove Article">
+            Delete Article
           </Button>
         </Menu.Item>
         <Menu.Item position="right">
