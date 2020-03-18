@@ -381,8 +381,8 @@ describe("Editor.js", () => {
       const deleteButton = getByLabelText("Remove Article");
       expect(deleteButton).toBeInTheDocument();
       fireEvent.click(deleteButton);
-      await wait(() => getByText("Confirm Delete?"));
-      expect(getByText("Confirm Delete?")).toBeInTheDocument();
+      await wait(() => getByText("Delete article?"));
+      expect(getByText("Delete article?")).toBeInTheDocument();
     });
 
     test("delete modal box removes correct article when a deletion is confirmed", async () => {
