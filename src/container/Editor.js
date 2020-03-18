@@ -85,7 +85,6 @@ class Editor extends React.Component {
         isPublished: false,
         title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
-        id: uuidv4(),
         category: this.state.categoryState.category
       };
       const updatedEditorState = {
@@ -100,7 +99,14 @@ class Editor extends React.Component {
         this.setState({
           modalState: { noTitleError: true }
         });
+      } else if (this.props.articleId) {
+        await axios.patch(
+          `/articles/update/${this.props.articleId}`,
+          articleDetails
+        );
+        this.setState({ editorState: updatedEditorState });
       } else {
+        articleDetails.id = uuidv4();
         await axios.post("/articles", articleDetails);
         this.setState({ editorState: updatedEditorState });
       }
@@ -151,8 +157,7 @@ class Editor extends React.Component {
     }
   };
 
-  componentDidMount() {
-    this.getCategories();
+  displayArticle = () => {
     if (this.props.articleTitle === "") {
       this.updateArticleState([
         {
@@ -166,7 +171,7 @@ class Editor extends React.Component {
           blockArray: [""]
         }
       ]);
-    } else
+    } else {
       axios
         .get(`articles/${this.props.articleTitle}`)
         .then(response => {
@@ -174,8 +179,15 @@ class Editor extends React.Component {
           this.setState({
             articleUpdatedAt: response.data[0].updatedAt
           });
+          this.props.updateArticleId(response.data[0].id);
         })
         .catch(error => console.log(error));
+    }
+  };
+
+  componentDidMount() {
+    this.getCategories();
+    this.displayArticle();
   }
 
   render = () => {

@@ -19,7 +19,8 @@ class App extends React.Component {
   returnToDashboard = () => {
     this.setState({
       showEditor: false,
-      articleTitle: ""
+      articleTitle: "",
+      articleId: ""
     });
   };
   updateArticleTitle = e => {
@@ -28,6 +29,12 @@ class App extends React.Component {
       showEditor: true
     });
   };
+  updateArticleId = calledArticleId => {
+    this.setState({
+      articleId: calledArticleId
+    });
+  };
+
   render = () => {
     return (
       <Container>
@@ -36,6 +43,7 @@ class App extends React.Component {
             articleId={this.state.articleId}
             articleTitle={this.state.articleTitle}
             returnToDashboard={this.returnToDashboard}
+            updateArticleId={this.updateArticleId}
           />
         ) : (
           <Dashboard
