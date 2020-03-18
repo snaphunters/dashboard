@@ -3,6 +3,7 @@ import { Container, Divider, Label, Loader, Segment } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
 import SavedModal from "../component/SavedModal";
+import CategoryMenu from "../component/CategoryMenu";
 import {
   ErrorModalDuplicateTitle,
   ErrorModalNoTitle
@@ -17,6 +18,7 @@ class Editor extends React.Component {
       modalState: { noTitleError: false, duplicateTitleError: false },
       editorState: { isSaved: false, isPublished: false },
       articleUpdatedAt: "",
+      categoryState: { categoryArray: [], category: "Uncategorized" },
       topicAndSubtopicArray: [
         {
           containerId: uuidv4(),
@@ -31,6 +33,24 @@ class Editor extends React.Component {
       ]
     };
   }
+
+  getCategories() {
+    axios
+      .get("/categories")
+      .then(response => {
+        const categoryState = { ...this.state.categoryState };
+        categoryState.categoryArray = response.data;
+        this.setState({ categoryState });
+      })
+      .catch(error => {
+        return error;
+      });
+  }
+  updateCategory = newCategory => {
+    const categoryState = { ...this.state.categoryState };
+    categoryState.category = newCategory;
+    this.setState({ categoryState });
+  };
 
   toggleEditable = bool => {
     this.setState({ isEditable: bool });
@@ -51,13 +71,22 @@ class Editor extends React.Component {
       editorState: { isSaved: false }
     });
   };
+
+  trimTitle = title => {
+    return title
+      .split(" ")
+      .filter(word => word)
+      .join(" ");
+  };
+
   saveDraft = async () => {
     try {
       const articleDetails = {
         isPublished: false,
-        title: this.state.topicAndSubtopicArray[0].title,
+        title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
-        id: uuidv4()
+        id: uuidv4(),
+        category: this.state.categoryState.category
       };
       const updatedEditorState = {
         isSaved: true,
@@ -85,7 +114,45 @@ class Editor extends React.Component {
     }
   };
 
+  publishTopic = async () => {
+    try {
+      const articleDetails = {
+        isPublished: true,
+        title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
+        topicAndSubtopicArray: this.state.topicAndSubtopicArray,
+        id: uuidv4()
+      };
+      const updatedEditorState = {
+        isSaved: true,
+        isPublished: true
+      };
+      if (
+        this.state.topicAndSubtopicArray.filter(
+          element => element.title.trim().length === 0
+        ).length !== 0
+      ) {
+        this.setState({
+          modalState: { noTitleError: true }
+        });
+      } else {
+        await Promise.all([
+          axios.post("/publish", articleDetails),
+          axios.post("/articles", articleDetails)
+        ]);
+        this.setState({ editorState: updatedEditorState });
+      }
+    } catch (error) {
+      if (error.response.status === 422) {
+        this.setState({
+          modalState: { duplicateTitleError: true }
+        });
+      }
+      return error;
+    }
+  };
+
   componentDidMount() {
+    this.getCategories();
     if (this.props.articleTitle === "") {
       this.updateArticleState([
         {
@@ -118,6 +185,7 @@ class Editor extends React.Component {
           isEditable={this.state.isEditable}
           toggleEditable={this.toggleEditable}
           saveDraft={this.saveDraft}
+          publishTopic={this.publishTopic}
           addSubtopicContainer={this.addSubtopicContainer}
           returnToDash={this.props.returnToDashboard}
         />
@@ -140,6 +208,11 @@ class Editor extends React.Component {
             </Label>
           )}
         </Segment>
+        <CategoryMenu
+          categoryArray={this.state.categoryState.categoryArray}
+          category={this.state.categoryState.category}
+          updateCategory={this.updateCategory}
+        />
         <TopicAndSubtopic
           isEditable={this.state.isEditable}
           topicAndSubtopicArray={this.state.topicAndSubtopicArray}
