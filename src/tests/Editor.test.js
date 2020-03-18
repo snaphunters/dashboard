@@ -14,6 +14,8 @@ jest.mock("@ckeditor/ckeditor5-react", () => {
   };
 });
 
+const mockUpdateFunction = jest.fn();
+
 describe("Editor.js", () => {
   test("<Editor> should render", () => {
     const { getByLabelText } = render(<Editor articleTitle={""} />);
@@ -74,7 +76,7 @@ describe("Editor.js", () => {
     describe("render savedModal", () => {
       test("should render 'successfully saved!' after axios is successfully", async () => {
         const { getByText, getByLabelText } = render(
-          <Editor articleTitle={""} />
+          <Editor articleTitle={""} updateArticleId={mockUpdateFunction} />
         );
         mockAxios.onPost("/articles").reply(201);
         const topicTitleInputBox = getByLabelText("Topic Title");
@@ -92,7 +94,7 @@ describe("Editor.js", () => {
 
       test("Save modal box should close when clicked", async () => {
         const { queryByText, getByLabelText } = render(
-          <Editor articleTitle={""} />
+          <Editor articleTitle={""} updateArticleId={mockUpdateFunction} />
         );
         mockAxios.onPost("/articles").reply(201);
         const topicTitleInputBox = getByLabelText("Topic Title");
@@ -112,7 +114,7 @@ describe("Editor.js", () => {
     describe("Render Error Modals", () => {
       test("should render Error message when article title is empty", () => {
         const { getByText, getByLabelText } = render(
-          <Editor articleTitle={""} />
+          <Editor articleTitle={""} updateArticleId={mockUpdateFunction} />
         );
         const saveButton = getByLabelText("Save Button");
         fireEvent.click(saveButton);

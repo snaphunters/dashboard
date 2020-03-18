@@ -117,6 +117,7 @@ class Editor extends React.Component {
         articleDetails.id = uuidv4();
         await axios.post("/articles", articleDetails);
         this.setState({ editorState: updatedEditorState });
+        this.props.updateArticleId(articleDetails.id);
       }
     } catch (error) {
       if (error.response.status === 422) {
