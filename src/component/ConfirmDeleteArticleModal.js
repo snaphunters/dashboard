@@ -10,7 +10,7 @@ const ConfirmDeleteModal = ({
     <Modal open={openDeleteModal} onClose={closeDeleteModal}>
       <Header content="Saved" />
       <Modal.Content>
-        <p>Confirm Delete?</p>
+        <p>Delete article?</p>
       </Modal.Content>
       <Modal.Actions>
         <Button
@@ -25,7 +25,7 @@ const ConfirmDeleteModal = ({
           color="red"
           onClick={closeDeleteModal}
         >
-          <Icon name="checkmark" /> No
+          <Icon name="close" /> No
         </Button>
       </Modal.Actions>
     </Modal>
