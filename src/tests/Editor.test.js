@@ -259,114 +259,144 @@ describe("Editor.js", () => {
         );
       });
     });
-  });
-  describe("Return to Dashboard", () => {
-    test("Return to Dashboard <Button> should render", () => {
-      const { getByLabelText } = render(<Editor />);
-      const returnToDashContainer = getByLabelText("return to dashboard");
-      const returnToDashBtn = within(returnToDashContainer).getByLabelText(
-        "Return to Dashboard"
-      );
-      expect(returnToDashBtn).toBeInTheDocument();
+
+    describe("Return to Dashboard", () => {
+      test("Return to Dashboard <Button> should render", () => {
+        const { getByLabelText } = render(<Editor />);
+        const returnToDashContainer = getByLabelText("return to dashboard");
+        const returnToDashBtn = within(returnToDashContainer).getByLabelText(
+          "Return to Dashboard"
+        );
+        expect(returnToDashBtn).toBeInTheDocument();
+      });
+
+      test("Return to Dashboard <Button> should return to dashboard on click", async () => {
+        const returnToDashboard = jest.fn();
+        const { getByLabelText } = render(
+          <Editor returnToDashboard={returnToDashboard} />
+        );
+        const returnToDashContainer = getByLabelText("return to dashboard");
+        const returnToDashBtn = within(returnToDashContainer).getByLabelText(
+          "Return to Dashboard"
+        );
+        fireEvent.click(returnToDashBtn);
+        expect(returnToDashboard).toHaveBeenCalled();
+      });
     });
 
-    test("Return to Dashboard <Button> should return to dashboard on click", async () => {
-      const returnToDashboard = jest.fn();
-      const { getByLabelText } = render(
-        <Editor returnToDashboard={returnToDashboard} />
-      );
-      const returnToDashContainer = getByLabelText("return to dashboard");
-      const returnToDashBtn = within(returnToDashContainer).getByLabelText(
-        "Return to Dashboard"
-      );
-      fireEvent.click(returnToDashBtn);
-      expect(returnToDashboard).toHaveBeenCalled();
+    describe("Edit and Preview", () => {
+      test("Edit and Preview <Button> should render", () => {
+        const { getByLabelText } = render(<Editor />);
+        const editBtn = getByLabelText("Edit Button");
+        const previewBtn = getByLabelText("Preview Button");
+        expect(editBtn).toBeInTheDocument();
+        expect(previewBtn).toBeInTheDocument();
+      });
+      test("Click Preview and all add/delete buttons should not render", () => {
+        const { getByLabelText, queryAllByLabelText } = render(<Editor />);
+        const regex = new RegExp(/^(add|delete).*button/, "i");
+        const addBlockBtn = getByLabelText(
+          "add topicSubtopic 0 block button 0"
+        );
+        const previewBtn = getByLabelText("Preview Button");
+        fireEvent.click(addBlockBtn); //to make the block delete button render
+        fireEvent.click(previewBtn);
+        const allAddDeleteBtn = queryAllByLabelText(regex);
+        expect(allAddDeleteBtn).toEqual([]);
+      });
+      test("Click Preview then Edit and all add/delete buttons should render", () => {
+        const { getByLabelText, getAllByLabelText } = render(<Editor />);
+        const regex = new RegExp(/^(add|delete).*button/, "i");
+        const addBlockBtn = getByLabelText(
+          "add topicSubtopic 0 block button 0"
+        );
+        const editBtn = getByLabelText("Edit Button");
+        const previewBtn = getByLabelText("Preview Button");
+        fireEvent.click(addBlockBtn); //to make the block delete button render
+        fireEvent.click(previewBtn);
+        fireEvent.click(editBtn);
+        const allAddDeleteBtn = getAllByLabelText(regex);
+        expect(allAddDeleteBtn.length).toBe(7);
+      });
     });
-  });
 
-  describe("Edit and Preview", () => {
-    test("Edit and Preview <Button> should render", () => {
-      const { getByLabelText } = render(<Editor />);
-      const editBtn = getByLabelText("Edit Button");
-      const previewBtn = getByLabelText("Preview Button");
-      expect(editBtn).toBeInTheDocument();
-      expect(previewBtn).toBeInTheDocument();
-    });
-    test("Click Preview and all add/delete buttons should not render", () => {
+    test("Category Dropdown Menu is rendered with list of Categories", async () => {
+      const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+      mockAxios.onGet("/categories").reply(200, categories);
+
       const { getByLabelText, queryAllByLabelText } = render(<Editor />);
-      const regex = new RegExp(/^(add|delete).*button/, "i");
-      const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
-      const previewBtn = getByLabelText("Preview Button");
-      fireEvent.click(addBlockBtn); //to make the block delete button render
-      fireEvent.click(previewBtn);
-      const allAddDeleteBtn = queryAllByLabelText(regex);
-      expect(allAddDeleteBtn).toEqual([]);
+      expect(getByLabelText("CategoryDropDown")).toBeInTheDocument();
+
+      await wait(() => {
+        expect(queryAllByLabelText(/Category Option/).length).toBe(4);
+      });
     });
-    test("Click Preview then Edit and all add/delete buttons should render", () => {
-      const { getByLabelText, getAllByLabelText } = render(<Editor />);
-      const regex = new RegExp(/^(add|delete).*button/, "i");
-      const addBlockBtn = getByLabelText("add topicSubtopic 0 block button 0");
-      const editBtn = getByLabelText("Edit Button");
-      const previewBtn = getByLabelText("Preview Button");
-      fireEvent.click(addBlockBtn); //to make the block delete button render
-      fireEvent.click(previewBtn);
-      fireEvent.click(editBtn);
-      const allAddDeleteBtn = getAllByLabelText(regex);
-      expect(allAddDeleteBtn.length).toBe(7);
+
+    test("Selecting a category should display the correct category", async () => {
+      const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+      mockAxios.onGet("/categories").reply(200, categories);
+
+      const { getByLabelText } = render(<Editor />);
+
+      const categoryDropdown = getByLabelText("CategoryDropDown");
+      expect(categoryDropdown).toBeInTheDocument();
+
+      await wait(() => {
+        fireEvent.change(categoryDropdown, { target: { value: "lemonade" } });
+        expect(categoryDropdown.value).toBe("lemonade");
+      });
     });
-  });
 
-  test("Category Dropdown Menu is rendered with list of Categories", async () => {
-    const categories = ["lemonade", "vanilla", "chocolate", "durian"];
-    mockAxios.onGet("/categories").reply(200, categories);
+    test("Last updated date of article should render when editing an existing article", async () => {
+      const mockArticle = {
+        title: "412t",
+        topicAndSubtopicArray: [
+          {
+            blockArray: ["<p>jskhkjhgkjdfhghkj</p>"],
+            _id: "5e6f34fa802b2a05c4a6b204",
+            title: "412t"
+          },
+          {
+            blockArray: ["<p>jfdkjhfjkdhfkjdhfkj</p>"],
+            _id: "5e6f34fa802b2a05c4a6b205",
+            title: "413"
+          }
+        ],
+        id: "0a6f72b5-169c-4580-84f7-45225c00420b",
+        createdAt: "2020-03-16T08:12:42.991Z",
+        updatedAt: "2020-03-16T08:12:42.991Z"
+      };
 
-    const { getByLabelText, queryAllByLabelText } = render(<Editor />);
-    expect(getByLabelText("CategoryDropDown")).toBeInTheDocument();
-
-    await wait(() => {
-      expect(queryAllByLabelText(/Category Option/).length).toBe(4);
+      const { getByLabelText } = render(<Editor articleTitle={"412t"} />);
+      mockAxios.onGet("/articles/412t").reply(200, mockArticle);
+      await wait(() => getByLabelText("Last Updated Label"));
+      const { getByText } = within(getByLabelText("Last Updated Label"));
+      expect(getByText("Last Updated:")).toBeInTheDocument();
     });
-  });
 
-  test("Selecting a category should display the correct category", async () => {
-    const categories = ["lemonade", "vanilla", "chocolate", "durian"];
-    mockAxios.onGet("/categories").reply(200, categories);
-
-    const { getByLabelText } = render(<Editor />);
-
-    const categoryDropdown = getByLabelText("CategoryDropDown");
-    expect(categoryDropdown).toBeInTheDocument();
-
-    await wait(() => {
-      fireEvent.change(categoryDropdown, { target: { value: "lemonade" } });
-      expect(categoryDropdown.value).toBe("lemonade");
+    test("delete modal box renders when click on delete modal button", async () => {
+      const { getByLabelText, getByText } = render(
+        <Editor articleTitle={"412t"} />
+      );
+      const deleteButton = getByLabelText("Remove Article");
+      expect(deleteButton).toBeInTheDocument();
+      fireEvent.click(deleteButton);
+      await wait(() => getByText("Confirm Delete?"));
+      expect(getByText("Confirm Delete?")).toBeInTheDocument();
     });
-  });
 
-  test("Last updated date of article should render when editing an existing article", async () => {
-    const mockArticle = {
-      title: "412t",
-      topicAndSubtopicArray: [
-        {
-          blockArray: ["<p>jskhkjhgkjdfhghkj</p>"],
-          _id: "5e6f34fa802b2a05c4a6b204",
-          title: "412t"
-        },
-        {
-          blockArray: ["<p>jfdkjhfjkdhfkjdhfkj</p>"],
-          _id: "5e6f34fa802b2a05c4a6b205",
-          title: "413"
-        }
-      ],
-      id: "0a6f72b5-169c-4580-84f7-45225c00420b",
-      createdAt: "2020-03-16T08:12:42.991Z",
-      updatedAt: "2020-03-16T08:12:42.991Z"
-    };
-
-    const { getByLabelText } = render(<Editor articleTitle={"412t"} />);
-    mockAxios.onGet("/articles/412t").reply(200, mockArticle);
-    await wait(() => getByLabelText("Last Updated Label"));
-    const { getByText } = within(getByLabelText("Last Updated Label"));
-    expect(getByText("Last Updated:")).toBeInTheDocument();
+    test("delete modal box removes correct article when a deletion is confirmed", async () => {
+      const { getByLabelText, getByText, debug } = render(
+        <Editor articleTitle={"412t"} />
+      );
+      const deleteButton = getByLabelText("Remove Article");
+      expect(deleteButton).toBeInTheDocument();
+      fireEvent.click(deleteButton);
+      await wait(() => getByText("No"));
+      const exitDeleteModal = getByText("No");
+      debug();
+      fireEvent.click(exitDeleteModal);
+      expect(exitDeleteModal).not.toBeInTheDocument();
+    });
   });
 });
