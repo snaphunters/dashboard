@@ -2,15 +2,11 @@ import React from "react";
 import { Container, Divider, Label, Loader, Segment } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
-<<<<<<< HEAD
+import ConfirmDeleteModal from "../component/ConfirmDeleteArticleModal";
 import {
   SavedModal,
   PublishModal
 } from "../component/SaveDraftAndPublishModal";
-=======
-import SavedModal from "../component/SavedModal";
-import ConfirmDeleteModal from "../component/ConfirmDeleteArticleModal";
->>>>>>> [Nev/JC] #13 Add state and functions to handle delete article functionalities
 import CategoryMenu from "../component/CategoryMenu";
 import {
   ErrorModalDuplicateTitle,
@@ -82,11 +78,6 @@ class Editor extends React.Component {
     });
   };
 
-<<<<<<< HEAD
-  closePublishModal = () => {
-    this.setState({
-      editorState: { isPublished: false }
-=======
   openDeleteModal = () => {
     this.setState({
       deleteState: { deleteModalOpen: true }
@@ -96,7 +87,11 @@ class Editor extends React.Component {
   closeDeleteModal = () => {
     this.setState({
       deleteState: { deleteModalOpen: false }
->>>>>>> [Nev/JC] #13 Add state and functions to handle delete article functionalities
+    });
+  };
+  closePublishModal = () => {
+    this.setState({
+      editorState: { isPublished: false }
     });
   };
 
@@ -280,16 +275,15 @@ class Editor extends React.Component {
           isSaved={this.state.editorState.isSaved}
           closeSave={this.closeSaveModal}
         />
-<<<<<<< HEAD
-        <PublishModal
-          isPublished={this.state.editorState.isPublished}
-          closePublish={this.closePublishModal}
-=======
         <ConfirmDeleteModal
           openDeleteModal={this.state.deleteState.deleteModalOpen}
           closeDeleteModal={this.closeDeleteModal}
           confirmDelete={this.confirmDelete}
->>>>>>> [Nev/JC] #13 Add state and functions to handle delete article functionalities
+        />
+
+        <PublishModal
+          isPublished={this.state.editorState.isPublished}
+          closePublish={this.closePublishModal}
         />
         <ErrorModalDuplicateTitle
           showDuplicateTitleError={this.state.modalState.duplicateTitleError}
