@@ -19,8 +19,8 @@ jest.mock("@ckeditor/ckeditor5-react", () => {
 
 describe("App.js", () => {
   test("<Dashboard> should render", () => {
-    const { getByText } = render(<App />);
-    const dashBoardComponent = getByText("Dashboard");
+    const { getByLabelText } = render(<App />);
+    const dashBoardComponent = getByLabelText("Dashboard");
     expect(dashBoardComponent).toBeInTheDocument();
   });
   test("Test functionality of Create New Article", () => {

@@ -23,7 +23,7 @@ const HeaderBar = ({
       <Container>
         <Menu.Item position="left" aria-label="return to dashboard">
           <Button onClick={returnToDash} aria-label="Return to Dashboard">
-            Back to Dashboard
+            Back
           </Button>
         </Menu.Item>
       </Container>

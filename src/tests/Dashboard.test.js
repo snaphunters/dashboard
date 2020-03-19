@@ -13,28 +13,36 @@ const mockAxios = new MockAdapter(axios);
 
 const mockSingleArticle = [
   {
-    isPublished: false,
-    _id: "5e5e20a625449a001708e64f",
-    subCategories: [],
-    blocks: [],
-    published: false,
-    title: "This is a title",
-    id: "48c78302-ff67-41c3-891d-920cc3efd04d",
-    createdAt: "2020-03-03T09:17:26.312Z",
-    updatedAt: "2020-03-03T09:17:26.312Z",
-    __v: 0,
-    topicAndSubtopicArray: []
+    isPublished: true,
+    _id: "5e72d92d6905ea00175d885c",
+    title: "Types of accounts",
+    topicAndSubtopicArray: [
+      {
+        blockArray: ["<p>Some types of accounts</p>"],
+        _id: "5e72d92d6905ea00175d885d",
+        title: "Types of accounts"
+      },
+      {
+        blockArray: ["<p>some stand alone accounts</p>"],
+        _id: "5e72d92d6905ea00175d885e",
+        title: "Stand-alone accounts"
+      }
+    ],
+    id: "49c6a924-5ddb-4939-ab88-e941aee93485",
+    createdAt: "2020-03-19T02:30:05.394Z",
+    updatedAt: "2020-03-19T02:30:05.394Z",
+    __v: 0
   }
 ];
 
 describe("Dashboard.js", () => {
   test("<Dashboard> should render", () => {
-    const { getByText } = render(<Dashboard />);
+    const { getByLabelText } = render(<Dashboard />);
     mockAxios
       .onGet("/categories")
       .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
-    const DashboardComponent = getByText("Dashboard");
+    const DashboardComponent = getByLabelText("Dashboard");
     expect(DashboardComponent).toBeInTheDocument();
   });
   test("Create New Article <Button> should render", () => {
@@ -70,11 +78,17 @@ describe("Dashboard.js", () => {
   });
 
   test("Should render article titles", async () => {
-    const { getByLabelText } = render(<Dashboard />);
+    const { getByLabelText, getAllByLabelText } = render(<Dashboard />);
     mockAxios
       .onGet("/categories")
       .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
+    mockAxios
+      .onGet("/categories/Lemonade")
+      .reply(200, [mockSingleArticle[0].id]);
+    await wait(() => getAllByLabelText("CategoryTab"));
+    const [firstCategoryTab] = getAllByLabelText("CategoryTab");
+    fireEvent.click(firstCategoryTab);
     await wait(() => getByLabelText("article-title"));
     const { getByText } = within(getByLabelText("article-title"));
     expect(getByText(`${mockSingleArticle[0].title}`)).toBeInTheDocument();
@@ -82,14 +96,22 @@ describe("Dashboard.js", () => {
 
   test("Should render correct article when draft/published article is accessed", async () => {
     const editArticle = jest.fn();
-    const { getByLabelText } = render(<Dashboard editArticle={editArticle} />);
+    const { getByLabelText, getAllByLabelText } = render(
+      <Dashboard editArticle={editArticle} />
+    );
     mockAxios
       .onGet("/categories")
       .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
+    mockAxios
+      .onGet("/categories/Lemonade")
+      .reply(200, [mockSingleArticle[0].id]);
+    await wait(() => getAllByLabelText("CategoryTab"));
+    const [firstCategoryTab] = getAllByLabelText("CategoryTab");
+    fireEvent.click(firstCategoryTab);
     await wait(() => getByLabelText("article-title"));
     const { getByText } = within(getByLabelText("article-title"));
-    const articleTitle = getByText("This is a title");
+    const articleTitle = getByText("Types of accounts");
     fireEvent.click(articleTitle);
     expect(editArticle).toHaveBeenCalled();
   });

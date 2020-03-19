@@ -13,6 +13,7 @@ class CategoryBar extends React.Component {
             key={category}
             active={this.props.activeCategory === category}
             onClick={this.props.updateActiveCategory}
+            aria-label="CategoryTab"
           />
         ))}
       </Menu>

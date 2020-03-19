@@ -38,6 +38,7 @@ class Dashboard extends React.Component {
 
   updateActiveCategory = (event, { name }) =>
     this.setState({ activeCategory: name });
+
   componentDidUpdate(prevProps, prevState) {
     if (this.state.activeCategory !== prevState.activeCategory) {
       axios
@@ -58,13 +59,12 @@ class Dashboard extends React.Component {
     const { createNewArticle } = this.props;
     const { articleArray, activeCategory, topicsInCategoryArray } = this.state;
     return (
-      <Container textAlign="center">
-        <Header as="h1">Dashboard</Header>
+      <Container textAlign="center" aria-label="Dashboard">
         <Button
+          content="Create New Article"
           onClick={createNewArticle}
-          icon="plus circle"
           aria-label="Create New Article"
-        ></Button>
+        />
         <CategoryBar
           categoryArray={this.state.categoryArray}
           updateActiveCategory={this.updateActiveCategory}
