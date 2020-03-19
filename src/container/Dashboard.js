@@ -14,8 +14,9 @@ class Dashboard extends React.Component {
     super(props);
     this.state = {
       articleArray: [],
+      activeCategory: "",
       categoryArray: [],
-      activeCategory: ""
+      topicsInCategoryArray: []
     };
   }
   componentDidMount() {
@@ -37,10 +38,25 @@ class Dashboard extends React.Component {
 
   updateActiveCategory = (event, { name }) =>
     this.setState({ activeCategory: name });
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.activeCategory !== prevState.activeCategory) {
+      axios
+        .get(`categories/${this.state.activeCategory}`)
+        .then(response => {
+          this.setState({
+            topicsInCategoryArray: response.data
+          });
+        })
+        .catch(error => {
+          return error;
+        });
+    }
+  }
 
   render = () => {
+    const welcomeMsg = "Please Select a Category from Above to Begin";
     const { createNewArticle } = this.props;
-    const { articleArray } = this.state;
+    const { articleArray, activeCategory, topicsInCategoryArray } = this.state;
     return (
       <Container textAlign="center">
         <Header as="h1">Dashboard</Header>
@@ -61,30 +77,45 @@ class Dashboard extends React.Component {
             fluid
             size="massive"
           >
-            {articleArray.map((item, idx) => {
-              return (
-                <Segment aria-label="article-title" key={item._id}>
-                  <Menu.Item horizontal="true">
-                    <Button
-                      basic
-                      active
-                      size="massive"
-                      fluid
-                      onClick={this.props.editArticle}
-                    >
-                      {item.title}
-                    </Button>
+            {activeCategory === "" && <Menu.Item>{welcomeMsg}</Menu.Item>}
+            {articleArray
+              .filter(topic => topicsInCategoryArray.includes(topic.id))
+              .map((topicToShow, idx) => {
+                return (
+                  <Segment aria-label="article-title" key={topicToShow._id}>
+                    <Menu.Item horizontal="true">
+                      <Button
+                        basic
+                        active
+                        size="massive"
+                        fluid
+                        onClick={this.props.editArticle}
+                      >
+                        {topicToShow.title}
+                      </Button>
 
-                    <Label
-                      aria-label="article-publish-status"
-                      aria-hidden="false"
-                    >
-                      {item.isPublished === false ? "DRAFT" : "PUBLISHED"}
-                    </Label>
-                  </Menu.Item>
-                </Segment>
-              );
-            })}
+                      <Label
+                        aria-label="article-publish-status"
+                        aria-hidden="false"
+                      >
+                        {topicToShow.isPublished === false
+                          ? "DRAFT"
+                          : "PUBLISHED"}
+                      </Label>
+                      {topicToShow.topicAndSubtopicArray.map(
+                        (subtopic, idx) =>
+                          !(idx === 0) && (
+                            <Header
+                              key={subtopic._id}
+                              size="tiny"
+                              content={subtopic.title}
+                            />
+                          )
+                      )}
+                    </Menu.Item>
+                  </Segment>
+                );
+              })}
           </Menu>
         </Container>
       </Container>
