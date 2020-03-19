@@ -45,12 +45,15 @@ class Editor extends React.Component {
       .then(response => {
         const categoryState = { ...this.state.categoryState };
         categoryState.categoryArray = response.data;
-        this.setState({ categoryState });
+        this.setState({
+          categoryState
+        });
       })
       .catch(error => {
         return error;
       });
   }
+
   updateCategory = newCategory => {
     const categoryState = { ...this.state.categoryState };
     categoryState.category = newCategory;
@@ -247,7 +250,11 @@ class Editor extends React.Component {
         .then(response => {
           this.updateArticleState(response.data[0].topicAndSubtopicArray);
           this.setState({
-            articleUpdatedAt: response.data[0].updatedAt
+            articleUpdatedAt: response.data[0].updatedAt,
+            categoryState: {
+              categoryArray: this.state.categoryState.categoryArray,
+              category: response.data.category
+            }
           });
           this.props.updateArticleId(response.data[0].id);
         })
