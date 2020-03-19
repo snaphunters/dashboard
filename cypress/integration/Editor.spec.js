@@ -38,7 +38,7 @@ describe("Editor", () => {
 
   beforeEach(() => {
     cy.visit("https://snaphunt-demo-react-testenv.herokuapp.com/");
-    cy.get("button.ui.icon.button").click();
+    cy.get('[aria-label="Create New Article"]').click();
   });
   it("End to End Testing", () => {
     addSubtopicTest();
@@ -53,7 +53,10 @@ describe("Editor", () => {
     cy.get('[aria-label="Save Button"]').click();
     cy.get('[aria-label="close save message"]').click();
     cy.get('[aria-label="Return to Dashboard"]').click();
-    cy.get('[aria-label="article-title"]')
+    cy.get('[aria-label="CategoryTab"]')
+      .last()
+      .click();
+    cy.get('[class="ui massive active basic fluid button"]')
       .last()
       .click();
     cy.get('button[aria-label="Remove Article"]').click();
@@ -171,14 +174,21 @@ describe("Editor", () => {
       cy.get('[aria-label="Save Button"]').click();
       cy.get('[aria-label="close save message"]').click();
       cy.get('[aria-label="Return to Dashboard"]').click();
-      cy.get('[aria-label="Create New Article"]').click();
+      cy.get('[aria-label="CategoryTab"]')
+        .last()
+        .click();
+      cy.get('[class="ui massive active basic fluid button"]')
+        .last()
+        .click();
       // +1 to time string to make it unique
       const currentTime2 = new Date().toISOString() + "1";
       cy.get('[aria-label="Topic Title"]').type(currentTime2);
-      cy.get('[aria-label="Delete subtopic container button 1"]').click();
       cy.get('[aria-label="Save Button"]').click();
       cy.get('[aria-label="close save message"]').click();
       cy.get('[aria-label="Return to Dashboard"]').click();
+      cy.get('[aria-label="CategoryTab"]')
+        .last()
+        .click();
       cy.contains(currentTime1);
       cy.contains(currentTime2);
     });
@@ -190,7 +200,10 @@ describe("Editor", () => {
     });
     it("Clicking delete article button on an existing article should open a modal", () => {
       cy.get('[aria-label="Return to Dashboard"]').click();
-      cy.get('[aria-label="article-title"]')
+      cy.get('[aria-label="CategoryTab"]')
+        .last()
+        .click();
+      cy.get('[class="ui massive active basic fluid button"]')
         .last()
         .click();
       cy.get('button[aria-label="Remove Article"]').click();
@@ -201,7 +214,10 @@ describe("Editor", () => {
 
     it("Clicking the 'Yes' button on the confirm delete modal should return to the dashboard", () => {
       cy.get('[aria-label="Return to Dashboard"]').click();
-      cy.get('[aria-label="article-title"]')
+      cy.get('[aria-label="CategoryTab"]')
+        .last()
+        .click();
+      cy.get('[class="ui massive active basic fluid button"]')
         .last()
         .click();
       cy.get('button[aria-label="Remove Article"]').click();
@@ -228,6 +244,10 @@ describe("Editor", () => {
       cy.get('[aria-label="Save Button"]').click();
       cy.get('[aria-label="close save message"]').click();
       cy.get('[aria-label="Return to Dashboard"]').click();
+      cy.get('[aria-label="CategoryTab"]')
+        .last()
+        .click();
+      cy.get('[class="ui massive active basic fluid button"]').last();
       cy.contains(time).click();
       cy.get('[aria-label="Last Updated Label"]');
       cy.get('[aria-label="Topic Title"]').should("have.value", time);
