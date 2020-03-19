@@ -35,6 +35,7 @@ describe("Editor", () => {
         "{enter} Lorem ipsum dolor sit amet, consectetur adipiscing elit.{enter}Donec posuere sit amet purus ut fermentum. Nunc quis placerat massa. Aliquam blandit eros eget cursus tincidunt."
       );
   };
+
   beforeEach(() => {
     cy.visit("https://snaphunt-demo-react-testenv.herokuapp.com/");
     cy.get("button.ui.icon.button").click();
@@ -54,6 +55,13 @@ describe("Editor", () => {
     cy.get('[aria-label="Return to Dashboard"]').click();
     cy.get('[aria-label="article-title"]')
       .last()
+      .click();
+    cy.get('button[aria-label="Remove Article"]').click();
+    cy.get(".modal")
+      .contains("Delete article?")
+      .should("be.visible");
+    cy.get(".modal button")
+      .eq(0)
       .click();
   });
   it("should render HeaderBar", () => {
@@ -173,6 +181,63 @@ describe("Editor", () => {
       cy.get('[aria-label="Return to Dashboard"]').click();
       cy.contains(currentTime1);
       cy.contains(currentTime2);
+    });
+  });
+
+  describe("Delete article button", () => {
+    it("Delete article button should be rendered on header bar", () => {
+      cy.get('button[aria-label="Remove Article"]').should("be.visible");
+    });
+    it("Clicking delete article button on an existing article should open a modal", () => {
+      cy.get('[aria-label="Return to Dashboard"]').click();
+      cy.get('[aria-label="article-title"]')
+        .last()
+        .click();
+      cy.get('button[aria-label="Remove Article"]').click();
+      cy.get(".modal")
+        .contains("Delete article?")
+        .should("be.visible");
+    });
+
+    it("Clicking the 'Yes' button on the confirm delete modal should return to the dashboard", () => {
+      cy.get('[aria-label="Return to Dashboard"]').click();
+      cy.get('[aria-label="article-title"]')
+        .last()
+        .click();
+      cy.get('button[aria-label="Remove Article"]').click();
+      cy.get(".modal")
+        .contains("Delete article?")
+        .should("be.visible");
+      cy.get(".modal button")
+        .eq(0)
+        .click();
+      cy.get('[aria-label="Return to Dashboard"]').should("not.exist");
+    });
+  });
+  describe("Retrive Topic", () => {
+    it("should retrieve an article with the correct content and timestamp label", () => {
+      const time = new Date().toISOString();
+      cy.get('[aria-label="Topic Title"]').type(time);
+      cy.get('[aria-label="Rich Text Editor, main"]')
+        .eq(0)
+        .type("testing only");
+      cy.get('[aria-label="Sub-Topic Title"]').type(time);
+      cy.get('[aria-label="Rich Text Editor, main"]')
+        .eq(1)
+        .type("testing");
+      cy.get('[aria-label="Save Button"]').click();
+      cy.get('[aria-label="close save message"]').click();
+      cy.get('[aria-label="Return to Dashboard"]').click();
+      cy.contains(time).click();
+      cy.get('[aria-label="Last Updated Label"]');
+      cy.get('[aria-label="Topic Title"]').should("have.value", time);
+      cy.get('[aria-label="Rich Text Editor, main"]')
+        .eq(0)
+        .contains("testing only");
+      cy.get('[aria-label="Sub-Topic Title"]').should("have.value", time);
+      cy.get('[aria-label="Rich Text Editor, main"]')
+        .eq(1)
+        .contains("testing");
     });
   });
 });
