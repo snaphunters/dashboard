@@ -80,6 +80,7 @@ class Dashboard extends React.Component {
             {activeCategory === "" && <Menu.Item>{welcomeMsg}</Menu.Item>}
             {topicsInCategoryArray
               .map(topicId => articleArray.find(topic => topic.id === topicId))
+              .filter(item => Boolean(item))
               .map(topicToShow => {
                 return (
                   <Segment aria-label="article-title" key={topicToShow._id}>
