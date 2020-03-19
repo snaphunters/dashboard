@@ -164,7 +164,6 @@ class Editor extends React.Component {
         isPublished: true,
         title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
-        id: uuidv4(),
         category: this.state.categoryState.category
       };
       const updatedEditorState = {
@@ -178,12 +177,40 @@ class Editor extends React.Component {
         this.setState({
           modalState: { noTitleError: true }
         });
+      }
+      const existInPublishCollection = await this.checkIfPublished(
+        this.props.articleId
+      );
+      if (!!this.props.articleId && existInPublishCollection) {
+        await Promise.all([
+          axios.patch(
+            `/publish/update/${this.props.articleId}`,
+            articleDetails
+          ),
+          axios.patch(
+            `/articles/update/${this.props.articleId}`,
+            articleDetails
+          )
+        ]);
+        this.setState({ editorState: updatedEditorState });
+      } else if (!!this.props.articleId && !existInPublishCollection) {
+        articleDetails.id = this.props.articleId;
+        await Promise.all([
+          axios.post("/publish", articleDetails),
+          axios.patch(
+            `/articles/update/${this.props.articleId}`,
+            articleDetails
+          )
+        ]);
+        this.setState({ editorState: updatedEditorState });
       } else {
+        articleDetails.id = uuidv4();
         await Promise.all([
           axios.post("/publish", articleDetails),
           axios.post("/articles", articleDetails)
         ]);
         this.setState({ editorState: updatedEditorState });
+        this.props.updateArticleId(articleDetails.id);
       }
     } catch (error) {
       if (error.response.status === 422) {
@@ -193,6 +220,11 @@ class Editor extends React.Component {
       }
       return error;
     }
+  };
+
+  checkIfPublished = async articleId => {
+    const response = await axios.get(`/publish/${articleId}`);
+    return response.data.length !== 0;
   };
 
   displayArticle = () => {

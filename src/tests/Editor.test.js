@@ -174,7 +174,14 @@ describe("Editor.js", () => {
   describe("Publish functionality", () => {
     describe("render PublishModal", () => {
       test("should render 'Successfully published!' after axios is successful", async () => {
-        const { getByText, getByLabelText } = render(<Editor />);
+        const { getByText, getByLabelText } = render(
+          <Editor
+            articleTitle={""}
+            updateArticleId={mockUpdateFunction}
+            articleId={""}
+          />
+        );
+        mockAxios.onGet("/publish/").reply(200, []);
         mockAxios.onPost("/publish").reply(201);
         mockAxios.onPost("/articles").reply(201);
         const topicTitleInputBox = getByLabelText("Topic Title");
@@ -190,7 +197,14 @@ describe("Editor.js", () => {
         });
       });
       test("Save modal box should close when clicked", async () => {
-        const { queryByText, getByLabelText } = render(<Editor />);
+        const { queryByText, getByLabelText } = render(
+          <Editor
+            articleTitle={""}
+            updateArticleId={mockUpdateFunction}
+            articleId={""}
+          />
+        );
+        mockAxios.onGet("/publish/").reply(200, []);
         mockAxios.onPost("/publish").reply(201);
         mockAxios.onPost("/articles").reply(201);
         const topicTitleInputBox = getByLabelText("Topic Title");
@@ -258,6 +272,71 @@ describe("Editor.js", () => {
           ).toBeInTheDocument()
         );
       });
+    });
+
+    describe("Publish Existing Data", () => {
+      test("should PATCH to both collections when article exists in both", async () => {
+        const mockArticleId = "80145006-0804-4316-a057-77a658cf14dc";
+        const mockArticleTitle = "Hello my name is tootoo";
+        const { getByText, getByLabelText } = render(
+          <Editor
+            articleTitle={mockArticleTitle}
+            updateArticleId={mockUpdateFunction}
+            articleId={mockArticleId}
+          />
+        );
+        mockAxios.onGet(`/publish/${mockArticleId}`).reply(200, ["1"]);
+        mockAxios.onPatch(`/publish/update/${mockArticleId}`).reply(201);
+        mockAxios.onPatch(`/articles/update/${mockArticleId}`).reply(201);
+        const topicTitleInputBox = getByLabelText("Topic Title");
+        const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
+        fireEvent.change(topicTitleInputBox, { target: { value: "Snapi3" } });
+        fireEvent.change(subtopicTitleInputBox, {
+          target: { value: "Snapi4" }
+        });
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        await wait(() => {
+          expect(getByText("Published")).toBeInTheDocument();
+        });
+      });
+
+      test("should POST to publish and PATCH to draft when article exists only in draft", async () => {
+        const mockArticleId = "80145006-0804-4316-a057-77a658cf14dc";
+        const mockArticleTitle = "Hello my name is tootoo";
+        const { getByText, getByLabelText } = render(
+          <Editor
+            articleTitle={mockArticleTitle}
+            updateArticleId={mockUpdateFunction}
+            articleId={mockArticleId}
+          />
+        );
+        mockAxios.onGet(`/publish/${mockArticleId}`).reply(200, []);
+        mockAxios.onPost("/publish").reply(201);
+        mockAxios.onPatch(`/articles/update/${mockArticleId}`).reply(201);
+        const topicTitleInputBox = getByLabelText("Topic Title");
+        const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
+        fireEvent.change(topicTitleInputBox, { target: { value: "Snapi3" } });
+        fireEvent.change(subtopicTitleInputBox, {
+          target: { value: "Snapi4" }
+        });
+        const publishButton = getByLabelText("Publish Button");
+        fireEvent.click(publishButton);
+        await wait(() => {
+          expect(getByText("Published")).toBeInTheDocument();
+        });
+      });
+    });
+  });
+
+  describe("Return to Dashboard", () => {
+    test("Return to Dashboard <Button> should render", () => {
+      const { getByLabelText } = render(<Editor />);
+      const returnToDashContainer = getByLabelText("return to dashboard");
+      const returnToDashBtn = within(returnToDashContainer).getByLabelText(
+        "Return to Dashboard"
+      );
+      expect(returnToDashBtn).toBeInTheDocument();
     });
 
     describe("Return to Dashboard", () => {
@@ -332,19 +411,29 @@ describe("Editor.js", () => {
       });
     });
 
-    test("Selecting a category should display the correct category", async () => {
-      const categories = ["lemonade", "vanilla", "chocolate", "durian"];
-      mockAxios.onGet("/categories").reply(200, categories);
+    test("delete modal box renders when click on delete modal button", async () => {
+      const { getByLabelText, getByText } = render(
+        <Editor articleTitle={"412t"} />
+      );
+      const deleteButton = getByLabelText("Remove Article");
+      expect(deleteButton).toBeInTheDocument();
+      fireEvent.click(deleteButton);
+      await wait(() => getByText("Delete article?"));
+      expect(getByText("Delete article?")).toBeInTheDocument();
+    });
 
-      const { getByLabelText } = render(<Editor />);
-
-      const categoryDropdown = getByLabelText("CategoryDropDown");
-      expect(categoryDropdown).toBeInTheDocument();
-
-      await wait(() => {
-        fireEvent.change(categoryDropdown, { target: { value: "lemonade" } });
-        expect(categoryDropdown.value).toBe("lemonade");
-      });
+    test("delete modal box removes correct article when a deletion is confirmed", async () => {
+      const { getByLabelText, getByText, debug } = render(
+        <Editor articleTitle={"412t"} />
+      );
+      const deleteButton = getByLabelText("Remove Article");
+      expect(deleteButton).toBeInTheDocument();
+      fireEvent.click(deleteButton);
+      await wait(() => getByText("No"));
+      const exitDeleteModal = getByText("No");
+      debug();
+      fireEvent.click(exitDeleteModal);
+      expect(exitDeleteModal).not.toBeInTheDocument();
     });
 
     test("Last updated date of article should render when editing an existing article", async () => {
@@ -373,30 +462,34 @@ describe("Editor.js", () => {
       const { getByText } = within(getByLabelText("Last Updated Label"));
       expect(getByText("Last Updated:")).toBeInTheDocument();
     });
+  });
 
-    test("delete modal box renders when click on delete modal button", async () => {
-      const { getByLabelText, getByText } = render(
-        <Editor articleTitle={"412t"} />
-      );
-      const deleteButton = getByLabelText("Remove Article");
-      expect(deleteButton).toBeInTheDocument();
-      fireEvent.click(deleteButton);
-      await wait(() => getByText("Delete article?"));
-      expect(getByText("Delete article?")).toBeInTheDocument();
+  describe("Category Menu Functionality", () => {
+    test("Category Dropdown Menu is rendered with list of Categories", async () => {
+      const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+      mockAxios.onGet("/categories").reply(200, categories);
+
+      const { getByLabelText, queryAllByLabelText } = render(<Editor />);
+      expect(getByLabelText("CategoryDropDown")).toBeInTheDocument();
+
+      await wait(() => {
+        expect(queryAllByLabelText(/Category Option/).length).toBe(4);
+      });
     });
 
-    test("delete modal box removes correct article when a deletion is confirmed", async () => {
-      const { getByLabelText, getByText, debug } = render(
-        <Editor articleTitle={"412t"} />
-      );
-      const deleteButton = getByLabelText("Remove Article");
-      expect(deleteButton).toBeInTheDocument();
-      fireEvent.click(deleteButton);
-      await wait(() => getByText("No"));
-      const exitDeleteModal = getByText("No");
-      debug();
-      fireEvent.click(exitDeleteModal);
-      expect(exitDeleteModal).not.toBeInTheDocument();
+    test("Selecting a category should display the correct category", async () => {
+      const categories = ["lemonade", "vanilla", "chocolate", "durian"];
+      mockAxios.onGet("/categories").reply(200, categories);
+
+      const { getByLabelText } = render(<Editor />);
+
+      const categoryDropdown = getByLabelText("CategoryDropDown");
+      expect(categoryDropdown).toBeInTheDocument();
+
+      await wait(() => {
+        fireEvent.change(categoryDropdown, { target: { value: "lemonade" } });
+        expect(categoryDropdown.value).toBe("lemonade");
+      });
     });
   });
 });
