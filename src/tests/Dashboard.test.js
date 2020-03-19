@@ -77,7 +77,7 @@ describe("Dashboard.js", () => {
     expect(articleTitleContainer).toBeInTheDocument();
   });
 
-  test("Should render article titles", async () => {
+  test("Should render article titles and subtopics", async () => {
     const { getByLabelText, getAllByLabelText } = render(<Dashboard />);
     mockAxios
       .onGet("/categories")
@@ -92,6 +92,8 @@ describe("Dashboard.js", () => {
     await wait(() => getByLabelText("article-title"));
     const { getByText } = within(getByLabelText("article-title"));
     expect(getByText(`${mockSingleArticle[0].title}`)).toBeInTheDocument();
+    expect(getByText("Types of accounts")).toBeInTheDocument();
+    expect(getByText("Stand-alone accounts")).toBeInTheDocument();
   });
 
   test("Should render correct article when draft/published article is accessed", async () => {
@@ -127,6 +129,7 @@ describe("Dashboard.js", () => {
     };
     return expect(expectedError()).rejects.toThrowError();
   });
+
   describe("CategoryBar.js", () => {
     test("Should render category bar when dashboard loads", () => {
       const { getByLabelText } = render(<Dashboard />);
@@ -137,5 +140,11 @@ describe("Dashboard.js", () => {
       const CategoryBarComponent = getByLabelText("Category Bar");
       expect(CategoryBarComponent).toBeInTheDocument();
     });
+  });
+
+  test("Dashboard on render should show welcome message", async () => {
+    const welcomeMsg = "Please Select a Category from Above to Begin";
+    const { getByText } = render(<Dashboard />);
+    expect(getByText(welcomeMsg)).toBeInTheDocument();
   });
 });

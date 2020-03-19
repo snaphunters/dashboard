@@ -39,18 +39,18 @@ class Dashboard extends React.Component {
   updateActiveCategory = (event, { name }) =>
     this.setState({ activeCategory: name });
 
+  getTopicsInCategory = async () => {
+    const topicsInCategory = await axios.get(
+      `categories/${this.state.activeCategory}`
+    );
+    this.setState({
+      topicsInCategoryArray: topicsInCategory.data
+    });
+  };
+
   componentDidUpdate(prevProps, prevState) {
     if (this.state.activeCategory !== prevState.activeCategory) {
-      axios
-        .get(`categories/${this.state.activeCategory}`)
-        .then(response => {
-          this.setState({
-            topicsInCategoryArray: response.data
-          });
-        })
-        .catch(error => {
-          return error;
-        });
+      this.getTopicsInCategory();
     }
   }
 
