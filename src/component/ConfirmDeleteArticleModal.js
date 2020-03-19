@@ -8,7 +8,7 @@ const ConfirmDeleteModal = ({
 }) => {
   return (
     <Modal open={openDeleteModal} onClose={closeDeleteModal}>
-      <Header content="Saved" />
+      <Header content="Delete" />
       <Modal.Content>
         <p>Delete article?</p>
       </Modal.Content>

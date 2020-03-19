@@ -30,12 +30,18 @@ const mockSingleArticle = [
 describe("Dashboard.js", () => {
   test("<Dashboard> should render", () => {
     const { getByText } = render(<Dashboard />);
+    mockAxios
+      .onGet("/categories")
+      .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
     const DashboardComponent = getByText("Dashboard");
     expect(DashboardComponent).toBeInTheDocument();
   });
   test("Create New Article <Button> should render", () => {
     const { getByLabelText } = render(<Dashboard />);
+    mockAxios
+      .onGet("/categories")
+      .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
     const addNewArticleButton = getByLabelText("Create New Article");
     expect(addNewArticleButton).toBeInTheDocument();
@@ -45,6 +51,9 @@ describe("Dashboard.js", () => {
     const { getByLabelText } = render(
       <Dashboard createNewArticle={createNewArticle} />
     );
+    mockAxios
+      .onGet("/categories")
+      .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
     const addNewArticleButton = getByLabelText("Create New Article");
     fireEvent.click(addNewArticleButton);
@@ -52,6 +61,9 @@ describe("Dashboard.js", () => {
   });
   test("Should return parent container that contains all article titles", () => {
     const { getByLabelText } = render(<Dashboard />);
+    mockAxios
+      .onGet("/categories")
+      .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
     const articleTitleContainer = getByLabelText("article-title-container");
     expect(articleTitleContainer).toBeInTheDocument();
@@ -59,6 +71,9 @@ describe("Dashboard.js", () => {
 
   test("Should render article titles", async () => {
     const { getByLabelText } = render(<Dashboard />);
+    mockAxios
+      .onGet("/categories")
+      .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
     await wait(() => getByLabelText("article-title"));
     const { getByText } = within(getByLabelText("article-title"));
@@ -68,6 +83,9 @@ describe("Dashboard.js", () => {
   test("Should render correct article when draft/published article is accessed", async () => {
     const editArticle = jest.fn();
     const { getByLabelText } = render(<Dashboard editArticle={editArticle} />);
+    mockAxios
+      .onGet("/categories")
+      .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
     mockAxios.onGet("/articles").reply(200, mockSingleArticle);
     await wait(() => getByLabelText("article-title"));
     const { getByText } = within(getByLabelText("article-title"));
@@ -86,5 +104,16 @@ describe("Dashboard.js", () => {
       await GET("/articles");
     };
     return expect(expectedError()).rejects.toThrowError();
+  });
+  describe("CategoryBar.js", () => {
+    test("Should render category bar when dashboard loads", () => {
+      const { getByLabelText } = render(<Dashboard />);
+      mockAxios
+        .onGet("/categories")
+        .reply(200, ["Lemonade", "Lemonade2", "Uncategorized"]);
+      mockAxios.onGet("/articles").reply(200, mockSingleArticle);
+      const CategoryBarComponent = getByLabelText("Category Bar");
+      expect(CategoryBarComponent).toBeInTheDocument();
+    });
   });
 });

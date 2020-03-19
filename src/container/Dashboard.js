@@ -8,25 +8,35 @@ import {
   Label
 } from "semantic-ui-react";
 import axios from "../utils/axios";
+import CategoryBar from "../component/CategoryBar";
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      articleArray: []
+      articleArray: [],
+      categoryArray: [],
+      activeCategory: ""
     };
   }
   componentDidMount() {
-    axios
-      .get("articles")
-      .then(response => {
-        this.setState({
-          articleArray: response.data
-        });
-      })
-      .catch(error => {
-        return error;
-      });
+    this.getArticles();
+    this.getCategoryList();
   }
+
+  getArticles = async () => {
+    const Articles = await axios.get("/articles");
+    this.setState({
+      articleArray: Articles.data
+    });
+  };
+
+  getCategoryList = async () => {
+    const categories = await axios.get("/categories");
+    this.setState({ categoryArray: categories.data });
+  };
+
+  updateActiveCategory = (event, { name }) =>
+    this.setState({ activeCategory: name });
 
   render = () => {
     const { createNewArticle } = this.props;
@@ -39,6 +49,11 @@ class Dashboard extends React.Component {
           icon="plus circle"
           aria-label="Create New Article"
         ></Button>
+        <CategoryBar
+          categoryArray={this.state.categoryArray}
+          updateActiveCategory={this.updateActiveCategory}
+          activeCategory={this.state.activeCategory}
+        />
         <Container>
           <Menu
             aria-label="article-title-container"

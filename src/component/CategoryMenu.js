@@ -21,6 +21,7 @@ const CategoryMenu = ({ categoryArray, category, updateCategory }) => {
   return (
     <Container>
       <Input
+        label="Category"
         list="categories"
         placeholder="Select/Type category..."
         onChange={e => updateCategory(e.target.value)}
