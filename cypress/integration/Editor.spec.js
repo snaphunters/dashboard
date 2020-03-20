@@ -56,9 +56,7 @@ describe("Editor", () => {
     cy.get('[aria-label="CategoryTab"]')
       .last()
       .click();
-    cy.get('[class="ui massive active basic fluid button"]')
-      .last()
-      .click();
+    cy.contains(time).click();
     cy.get('button[aria-label="Remove Article"]').click();
     cy.get(".modal")
       .contains("Delete article?")
@@ -243,7 +241,6 @@ describe("Editor", () => {
       cy.get('[aria-label="CategoryTab"]')
         .last()
         .click();
-      cy.get('[class="ui massive active basic fluid button"]').last();
       cy.contains(time).click();
       cy.get('[aria-label="Last saved label"]');
       cy.get('[aria-label="Topic Title"]').should("have.value", time);
