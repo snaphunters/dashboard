@@ -245,7 +245,7 @@ describe("Editor", () => {
         .click();
       cy.get('[class="ui massive active basic fluid button"]').last();
       cy.contains(time).click();
-      cy.get('[aria-label="Last Updated Label"]');
+      cy.get('[aria-label="Last saved label"]');
       cy.get('[aria-label="Topic Title"]').should("have.value", time);
       cy.get('[aria-label="Rich Text Editor, main"]')
         .eq(0)
