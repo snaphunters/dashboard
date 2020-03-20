@@ -111,7 +111,7 @@ describe("RichTextMediaBlock.js", () => {
     expect(buttonComponent).toBe(null);
   });
   test("delete button should be available for non-first blocks of any topic/subtopic ", () => {
-    const { getByLabelText } = render(<Editor />);
+    const { getByLabelText } = render(<Editor articleTitle={""} articleId={""} />);
     const addButton = getByLabelText("add topicSubtopic 0 block button 0");
     fireEvent.click(addButton);
     const deleteButton = getByLabelText(
@@ -121,7 +121,7 @@ describe("RichTextMediaBlock.js", () => {
   });
 
   test("click delete button should remmove corresponding block", () => {
-    const { getByLabelText } = render(<Editor />);
+    const { getByLabelText } = render(<Editor articleTitle={""} articleId={""} />);
     const addButton = getByLabelText("add topicSubtopic 0 block button 0");
     fireEvent.click(addButton);
     const deleteButton = getByLabelText(
@@ -132,7 +132,7 @@ describe("RichTextMediaBlock.js", () => {
     expect(newAddedBlock).not.toBeInTheDocument();
   });
   test("type into block should reflect changes", () => {
-    const { getAllByLabelText, getByDisplayValue } = render(<Editor />);
+    const { getAllByLabelText, getByDisplayValue } = render(<Editor articleTitle={""} articleId={""} />);
     const mockCKEditor = getAllByLabelText("mockCKEditor");
     fireEvent.change(mockCKEditor[0], { target: { value: "some Ck text" } });
     const mockCKEditorText = getByDisplayValue("some Ck text");

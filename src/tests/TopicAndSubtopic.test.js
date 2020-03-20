@@ -46,14 +46,18 @@ describe("TopicAndSubtopic.test.js", () => {
     expect(topicAndSubtopicArray.length).toBe(3);
   });
   test("on render delete button shows on subtopic container", () => {
-    const { getByLabelText } = render(<Editor />);
+    const { getByLabelText } = render(
+      <Editor articleTitle={""} articleId={""} />
+    );
     const deleteSubTopicButton = getByLabelText(
       "Delete subtopic container button 1"
     );
     expect(deleteSubTopicButton).toBeInTheDocument();
   });
   test("add subtopic then new subtopic has delete button", () => {
-    const { getByLabelText } = render(<Editor />);
+    const { getByLabelText } = render(
+      <Editor articleTitle={""} articleId={""} />
+    );
     const addNewArticleButton = getByLabelText(
       "Add subtopic container button 1"
     );
@@ -64,7 +68,9 @@ describe("TopicAndSubtopic.test.js", () => {
     expect(deleteSubTopicButton).toBeInTheDocument();
   });
   test("click delete subtopic button, the whole subtopic removed", () => {
-    const { getByLabelText } = render(<Editor />);
+    const { getByLabelText } = render(
+      <Editor articleTitle={""} articleId={""} />
+    );
     const deleteSubTopicButton = getByLabelText(
       "Delete subtopic container button 1"
     );
