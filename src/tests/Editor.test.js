@@ -31,6 +31,7 @@ const mockArticle = {
       containerId: "efghi"
     }
   ],
+  category: "Uncategorized",
   id: "0a6f72b5-169c-4580-84f7-45225c00420b",
   createdAt: "2020-03-16T08:12:42.991Z",
   updatedAt: "2020-03-16T08:12:42.991Z"
@@ -356,25 +357,25 @@ describe("Editor.js", () => {
 
     describe("Publish Existing Data", () => {
       test("should PATCH to both collections when article exists in both", async () => {
-        const mockArticleId = "80145006-0804-4316-a057-77a658cf14dc";
         const mockArticleTitle = "Hello my name is tootoo";
         const { getByText, getByLabelText } = render(
           <Editor
             articleTitle={mockArticleTitle}
             updateArticleId={mockUpdateFunction}
-            articleId={mockArticleId}
+            articleId={mockArticle.id}
           />
         );
         mockAxios.onGet(`/articles/${mockArticleTitle}`).reply(200, [
           {
-            id: mockArticleId,
+            id: mockArticle.id,
             title: mockArticleTitle,
+            category: "Uncategorized",
             topicAndSubtopicArray: mockArticle.topicAndSubtopicArray
           }
         ]);
-        mockAxios.onGet(`/publish/${mockArticleId}`).reply(200, [mockArticle]);
-        mockAxios.onPatch(`/publish/update/${mockArticleId}`).reply(201);
-        mockAxios.onPatch(`/articles/update/${mockArticleId}`).reply(201);
+        mockAxios.onGet(`/publish/${mockArticle.id}`).reply(200, [mockArticle]);
+        mockAxios.onPatch(`/publish/update/${mockArticle.id}`).reply(201);
+        mockAxios.onPatch(`/articles/update/${mockArticle.id}`).reply(201);
         const topicTitleInputBox = getByLabelText("Topic Title");
         const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
         fireEvent.change(topicTitleInputBox, { target: { value: "Snapi3" } });
@@ -389,18 +390,25 @@ describe("Editor.js", () => {
       });
 
       test("should POST to publish and PATCH to draft when article exists only in draft", async () => {
-        const mockArticleId = "80145006-0804-4316-a057-77a658cf14dc";
         const mockArticleTitle = "Hello my name is tootoo";
         const { getByText, getByLabelText } = render(
           <Editor
             articleTitle={mockArticleTitle}
             updateArticleId={mockUpdateFunction}
-            articleId={mockArticleId}
+            articleId={mockArticle.id}
           />
         );
-        mockAxios.onGet(`/publish/${mockArticleId}`).reply(200, [mockArticle]);
+        mockAxios.onGet(`/articles/${mockArticleTitle}`).reply(200, [
+          {
+            id: mockArticle.id,
+            title: mockArticleTitle,
+            category: "Uncategorized",
+            topicAndSubtopicArray: mockArticle.topicAndSubtopicArray
+          }
+        ]);
+        mockAxios.onGet(`/publish/${mockArticle.id}`).reply(200, []);
         mockAxios.onPost("/publish").reply(201);
-        mockAxios.onPatch(`/articles/update/${mockArticleId}`).reply(201);
+        mockAxios.onPatch(`/articles/update/${mockArticle.id}`).reply(201);
         const topicTitleInputBox = getByLabelText("Topic Title");
         const subtopicTitleInputBox = getByLabelText("Sub-Topic Title");
         fireEvent.change(topicTitleInputBox, { target: { value: "Snapi3" } });

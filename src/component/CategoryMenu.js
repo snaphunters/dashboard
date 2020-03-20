@@ -1,20 +1,20 @@
 import React from "react";
 import { Input, Container } from "semantic-ui-react";
 import { v4 as uuidv4 } from "uuid";
-//
+
 const populateCategories = categoryArray => {
-  if (categoryArray.length >= 1) {
-    return categoryArray.map((category, ind) => {
-      return (
-        <option
-          key={uuidv4()}
-          value={category}
-          aria-label={`Category Option ${ind}`}
-        />
-      );
-    });
+  if (categoryArray.length === 0) {
+    return;
   }
-  return;
+  return categoryArray.map((category, ind) => {
+    return (
+      <option
+        key={uuidv4()}
+        value={category}
+        aria-label={`Category Option ${ind}`}
+      />
+    );
+  });
 };
 
 const CategoryMenu = ({ categoryArray, category, updateCategory }) => {

@@ -3,7 +3,6 @@ import "semantic-ui-css/semantic.min.css";
 import Editor from "./container/Editor";
 import Dashboard from "./container/Dashboard";
 import { Container } from "semantic-ui-react";
-//import axios from "./utils/axios";
 class App extends React.Component {
   constructor(props) {
     super(props);

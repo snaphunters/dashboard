@@ -273,7 +273,7 @@ class Editor extends React.Component {
             updateState,
             categoryState: {
               categoryArray: this.state.categoryState.categoryArray,
-              category: response.data.category
+              category: response.data[0].category
             }
           });
           this.props.updateArticleId(response.data[0].id);
