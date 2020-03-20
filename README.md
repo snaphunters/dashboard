@@ -1,7 +1,7 @@
 # Snaphunt Helpdesk Demo
 
 ### `Description`
-The objective of the project is to create a content management system for a helpcentre module meant to help Snaphunt users quickly find detailed explanations of the platform's features. 
+The objective of the project is to create a content management system for a new help centre module that will enable Snaphunt users to quickly find detailed explanations of the platform's features. 
 
 Currently the Helpdesk is able to: 
 - Create, Save, Modify, and Delete topics
@@ -11,51 +11,46 @@ Currently the Helpdesk is able to:
 
 Please reference the Story wall for the current progress (20 March 2020 as of this commit).
 
-### `Stack used in Back End :`
+### `Stack used in Front End :`
 
 - Express
-- MongoDB
+- React
 - Nodejs "12.16.1"
 
 ### `Package used:`
 
-- cors "2.8.5"
-- dotenv "8.2.0"
-- uuid "7.0.1"
-- express "4.17.1
-- mongoose "5.9.2" 
+- CkEditor
+- Semantic-ui-react
+- Moment.js
+- Axios
 
 ### `.env variables`
-```EDITOR_HEROKU_URL```
-
-```FRONTEND_LOCALHOST```
-
-```MONGODB_URI```
-
-```SNAPI_HEROKU```
-
-```SNAPI_HEROKU_API_KEY```
+- EDITOR_HEROKU
+- EDITOR_HEROKU_API_KEY
+- REACT_APP_SNAPI_HEROKU_BACKEND_URL
 
 ### `Test commands`
 
-```$ npm run test```
-
-```$ npm run test:coverage```
-
+```javascript
+$ npm run test
+$ npm run test:coverage
+$ npm run cy:open
+$ npm run cy:run
+```
 ### `git clone`
-git clone https://github.com/snaphunters/snapi.git <br/>
+git clone https://github.com/snaphunters/editor.git <br/>
 
 ### `npm install`
 
-Install the packages above in NodeJS.<br/>
+Install the packages in NodeJS environment.<br/>
 
 ### `npm start`
 
-Runs the app in development mode.<br />
+Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br />
-You will also see lint errors in the console.
+You will also see any lint errors in the console.
 
-### `Frontend Repo`
-[https://github.com/snaphunters/editor](https://github.com/snaphunters/editor)
+### `Backend Repo`
+backend repo : https://github.com/snaphunters/snapi
