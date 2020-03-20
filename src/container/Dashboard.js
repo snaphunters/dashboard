@@ -43,10 +43,22 @@ class Dashboard extends React.Component {
     const topicsInCategory = await axios.get(
       `categories/${this.state.activeCategory}`
     );
+    const newTopicsInCategory = this.fillTopicsInCategoryArray(
+      topicsInCategory.data
+    );
     this.setState({
-      topicsInCategoryArray: topicsInCategory.data
+      topicsInCategoryArray: newTopicsInCategory
     });
   };
+
+  fillTopicsInCategoryArray = topicsInCategory => {
+    return topicsInCategory
+      .map(topicId => this.getTopicFromArticleArray(topicId))
+      .filter(element => element !== undefined);
+  };
+
+  getTopicFromArticleArray = topicId =>
+    this.state.articleArray.find(topic => topic.id === topicId);
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.activeCategory !== prevState.activeCategory) {
@@ -57,7 +69,7 @@ class Dashboard extends React.Component {
   render = () => {
     const welcomeMsg = "Please Select a Category from Above to Begin";
     const { createNewArticle } = this.props;
-    const { articleArray, activeCategory, topicsInCategoryArray } = this.state;
+    const { categoryArray, activeCategory, topicsInCategoryArray } = this.state;
     return (
       <Container textAlign="center" aria-label="Dashboard">
         <Button
@@ -66,9 +78,9 @@ class Dashboard extends React.Component {
           aria-label="Create New Article"
         />
         <CategoryBar
-          categoryArray={this.state.categoryArray}
+          categoryArray={categoryArray}
           updateActiveCategory={this.updateActiveCategory}
-          activeCategory={this.state.activeCategory}
+          activeCategory={activeCategory}
         />
         <Container>
           <Menu
@@ -78,45 +90,42 @@ class Dashboard extends React.Component {
             size="massive"
           >
             {activeCategory === "" && <Menu.Item>{welcomeMsg}</Menu.Item>}
-            {topicsInCategoryArray
-              .map(topicId => articleArray.find(topic => topic.id === topicId))
-              .filter(item => Boolean(item))
-              .map(topicToShow => {
-                return (
-                  <Segment aria-label="article-title" key={topicToShow._id}>
-                    <Menu.Item horizontal="true">
-                      <Button
-                        basic
-                        active
-                        size="massive"
-                        fluid
-                        onClick={this.props.editArticle}
-                      >
-                        {topicToShow.title}
-                      </Button>
+            {topicsInCategoryArray.map(topicToShow => {
+              return (
+                <Segment aria-label="article-title" key={topicToShow._id}>
+                  <Menu.Item horizontal="true">
+                    <Button
+                      basic
+                      active
+                      size="massive"
+                      fluid
+                      onClick={this.props.editArticle}
+                    >
+                      {topicToShow.title}
+                    </Button>
 
-                      <Label
-                        aria-label="article-publish-status"
-                        aria-hidden="false"
-                      >
-                        {topicToShow.isPublished === false
-                          ? "DRAFT"
-                          : "PUBLISHED"}
-                      </Label>
-                      {topicToShow.topicAndSubtopicArray.map(
-                        (subtopic, idx) =>
-                          !(idx === 0) && (
-                            <Header
-                              key={subtopic._id}
-                              size="tiny"
-                              content={subtopic.title}
-                            />
-                          )
-                      )}
-                    </Menu.Item>
-                  </Segment>
-                );
-              })}
+                    <Label
+                      aria-label="article-publish-status"
+                      aria-hidden="false"
+                    >
+                      {topicToShow.isPublished === false
+                        ? "DRAFT"
+                        : "PUBLISHED"}
+                    </Label>
+                    {topicToShow.topicAndSubtopicArray.map(
+                      (subtopic, idx) =>
+                        !(idx === 0) && (
+                          <Header
+                            key={subtopic._id}
+                            size="tiny"
+                            content={subtopic.title}
+                          />
+                        )
+                    )}
+                  </Menu.Item>
+                </Segment>
+              );
+            })}
           </Menu>
         </Container>
       </Container>
