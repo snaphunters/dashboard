@@ -1,9 +1,9 @@
 import React from "react";
 import { Header, Modal, Button, Icon } from "semantic-ui-react";
 
-const SavedModal = ({ isSaved, closeSave }) => {
+const SavedModal = ({ showSavedModal, closeSave }) => {
   return (
-    <Modal open={isSaved}>
+    <Modal open={showSavedModal}>
       <Header content="Saved" />
       <Modal.Content>
         <p>Successfully saved!</p>
@@ -21,9 +21,9 @@ const SavedModal = ({ isSaved, closeSave }) => {
   );
 };
 
-const PublishModal = ({ isPublished, closePublish }) => {
+const PublishModal = ({ showPublishedModal, closePublish }) => {
   return (
-    <Modal open={isPublished}>
+    <Modal open={showPublishedModal}>
       <Header content="Published" />
       <Modal.Content>
         <p>Successfully published!</p>

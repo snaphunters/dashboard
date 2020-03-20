@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Divider, Label, Loader, Segment } from "semantic-ui-react";
+import { Container, Divider, Segment, Grid } from "semantic-ui-react";
 import HeaderBar from "../component/HeaderBar";
 import axios from "../utils/axios";
 import ConfirmDeleteModal from "../component/ConfirmDeleteArticleModal";
@@ -14,15 +14,20 @@ import {
 } from "../component/SaveErrorModal";
 import TopicAndSubtopic from "../component/TopicAndSubtopic";
 import { v4 as uuidv4 } from "uuid";
+import TimeLabel from "../component/TimeLabel";
 class Editor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isEditable: true,
       modalState: { noTitleError: false, duplicateTitleError: false },
-      editorState: { isSaved: false, isPublished: false },
+      editorState: { showSavedModal: false, showPublishedModal: false },
       deleteState: { deleteModalOpen: false, confirmDelete: false },
-      articleUpdatedAt: "",
+      updateState: {
+        lastSaveDraftTime: "",
+        lastPublishTime: "",
+        isPublished: false
+      },
       categoryState: { categoryArray: [], category: "Uncategorized" },
       topicAndSubtopicArray: [
         {
@@ -77,7 +82,7 @@ class Editor extends React.Component {
 
   closeSaveModal = () => {
     this.setState({
-      editorState: { isSaved: false }
+      editorState: { showSavedModal: false }
     });
   };
 
@@ -94,7 +99,7 @@ class Editor extends React.Component {
   };
   closePublishModal = () => {
     this.setState({
-      editorState: { isPublished: false }
+      editorState: { showPublishedModal: false }
     });
   };
 
@@ -123,13 +128,13 @@ class Editor extends React.Component {
   saveDraft = async () => {
     try {
       const articleDetails = {
-        isPublished: false,
+        showPublishedModal: false,
         title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
         category: this.state.categoryState.category
       };
       const updatedEditorState = {
-        isSaved: true
+        showSavedModal: true
       };
       if (
         this.state.topicAndSubtopicArray.filter(
@@ -164,13 +169,13 @@ class Editor extends React.Component {
   publishTopic = async () => {
     try {
       const articleDetails = {
-        isPublished: true,
+        showPublishedModal: true,
         title: this.trimTitle(this.state.topicAndSubtopicArray[0].title),
         topicAndSubtopicArray: this.state.topicAndSubtopicArray,
         category: this.state.categoryState.category
       };
       const updatedEditorState = {
-        isPublished: true
+        showPublishedModal: true
       };
       if (
         this.state.topicAndSubtopicArray.filter(
@@ -181,7 +186,7 @@ class Editor extends React.Component {
           modalState: { noTitleError: true }
         });
       }
-      const existInPublishCollection = await this.checkIfPublished(
+      const existInPublishCollection = await this.isPublishedOrNew(
         this.props.articleId
       );
       if (!!this.props.articleId && existInPublishCollection) {
@@ -225,9 +230,22 @@ class Editor extends React.Component {
     }
   };
 
-  checkIfPublished = async articleId => {
+  isPublishedOrNew = async articleId => {
     const response = await axios.get(`/publish/${articleId}`);
     return response.data.length !== 0;
+  };
+
+  updatePublishedState = async articleId => {
+    if (articleId === "") {
+      return;
+    }
+    const response = await axios.get(`/publish/${articleId}`);
+    if (response.data.length === 1) {
+      const updateState = { ...this.state.updateState };
+      updateState.isPublished = true;
+      updateState.lastPublishTime = response.data[0].updatedAt;
+      this.setState({ updateState });
+    }
   };
 
   displayArticle = () => {
@@ -249,8 +267,10 @@ class Editor extends React.Component {
         .get(`articles/${this.props.articleTitle}`)
         .then(response => {
           this.updateArticleState(response.data[0].topicAndSubtopicArray);
+          const updateState = { ...this.state.updateState };
+          updateState.lastSaveDraftTime = response.data[0].updatedAt;
           this.setState({
-            articleUpdatedAt: response.data[0].updatedAt,
+            updateState,
             categoryState: {
               categoryArray: this.state.categoryState.categoryArray,
               category: response.data.category
@@ -265,6 +285,13 @@ class Editor extends React.Component {
   componentDidMount() {
     this.getCategories();
     this.displayArticle();
+    this.updatePublishedState(this.props.articleId);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.articleId !== this.props.articleId) {
+      this.updatePublishedState(this.props.articleId);
+    }
   }
 
   render = () => {
@@ -282,22 +309,26 @@ class Editor extends React.Component {
         />
         <Divider hidden section />
         <Segment basic>
-          {this.props.articleTitle && (
-            <Label
-              attached="top left"
-              color="teal"
-              aria-label="Last Updated Label"
-            >
-              Last Updated:{" "}
-              <Label.Detail>
-                {!this.state.articleUpdatedAt ? (
-                  <Loader size="mini" active inline />
-                ) : (
-                  new Date(this.state.articleUpdatedAt).toString()
-                )}
-              </Label.Detail>
-            </Label>
-          )}
+          <Grid>
+            {this.props.articleTitle && (
+              <Grid.Row>
+                <TimeLabel
+                  status="saved"
+                  color="teal"
+                  time={this.state.updateState.lastSaveDraftTime}
+                />
+              </Grid.Row>
+            )}
+            {this.props.articleTitle && this.state.updateState.isPublished && (
+              <Grid.Row>
+                <TimeLabel
+                  status="published"
+                  color="yellow"
+                  time={this.state.updateState.lastPublishTime}
+                />
+              </Grid.Row>
+            )}
+          </Grid>
         </Segment>
         <CategoryMenu
           categoryArray={this.state.categoryState.categoryArray}
@@ -311,7 +342,7 @@ class Editor extends React.Component {
         />
         <Divider hidden section />
         <SavedModal
-          isSaved={this.state.editorState.isSaved}
+          showSavedModal={this.state.editorState.showSavedModal}
           closeSave={this.closeSaveModal}
         />
         <ConfirmDeleteModal
@@ -321,7 +352,7 @@ class Editor extends React.Component {
         />
 
         <PublishModal
-          isPublished={this.state.editorState.isPublished}
+          showPublishedModal={this.state.editorState.showPublishedModal}
           closePublish={this.closePublishModal}
         />
         <ErrorModalDuplicateTitle
